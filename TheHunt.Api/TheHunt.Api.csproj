@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="7.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheHunt.Common\TheHunt.Common.csproj" />
+    <ProjectReference Include="..\TheHunt.Hunts\TheHunt.Hunts.csproj" />
+    <ProjectReference Include="..\TheHunt.Places\TheHunt.Places.csproj" />
+    <ProjectReference Include="..\TheHunt.ServiceDefaults\TheHunt.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\TheHunt.Users\TheHunt.Users.csproj" />
+  </ItemGroup>
+
+</Project>

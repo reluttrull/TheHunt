@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <Project Path="TheHunt.AppHost/TheHunt.AppHost.csproj" />
+    <Project Path="TheHunt.ServiceDefaults/TheHunt.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Features/">
+    <Project Path="TheHunt.Badges/TheHunt.Badges.csproj" />
+    <Project Path="TheHunt.Hunts/TheHunt.Hunts.csproj" />
+    <Project Path="TheHunt.Places/TheHunt.Places.csproj" />
+    <Project Path="TheHunt.Scores/TheHunt.Scores.csproj" />
+    <Project Path="TheHunt.Users/TheHunt.Users.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/">
+    <Project Path="TheHunt.client/TheHunt.client.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="TheHunt.Tests/TheHunt.Tests.csproj" />
+  </Folder>
+  <Project Path="TheHunt.Api/TheHunt.Api.csproj" />
+  <Project Path="TheHunt.Common/TheHunt.Common.csproj" />
+</Solution>

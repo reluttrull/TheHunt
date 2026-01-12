@@ -1,0 +1,39 @@
+@TheHunt.Api_HostAddress = http://localhost:5295
+
+POST {{TheHunt.Api_HostAddress}}/locations/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": null,
+  "latitude": 37.861523,
+  "longitude": -87.385952
+}
+
+###
+
+GET {{TheHunt.Api_HostAddress}}/locations/e0d0f4a8-b134-4a46-b17f-e19ca98eb028
+Accept: application/json
+
+###
+
+POST {{TheHunt.Api_HostAddress}}/places/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": null,
+  "name": "Place name",
+  "locationId": "e0d0f4a8-b134-4a46-b17f-e19ca98eb028",
+  "acceptedRadiusMeters": 5.0,
+  "hint1": "East of downtown",
+  "hint2": "Rhymes with orange",
+  "hint3": "Famous crime happened here",
+  "addedByUserId": "e1700788-0d7d-49fe-b118-03fd09079dd9",
+  "addedDate": "2024-05-20T14:30:00Z"
+}
+
+###
+
+GET {{TheHunt.Api_HostAddress}}/places/cf15c3a5-c586-48af-94b2-326cb547c177
+Accept: application/json
