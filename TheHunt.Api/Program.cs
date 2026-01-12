@@ -9,6 +9,11 @@ using TheHunt.Places.Places.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsDevelopment())
+{
+    DotNetEnv.Env.Load();
+}
+
 builder.AddServiceDefaults();
 
 builder.Services.AddOpenApi();
