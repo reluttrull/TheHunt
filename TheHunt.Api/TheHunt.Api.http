@@ -37,3 +37,27 @@ Content-Type: application/json
 
 GET {{TheHunt.Api_HostAddress}}/places/cf15c3a5-c586-48af-94b2-326cb547c177
 Accept: application/json
+
+
+###
+
+POST {{TheHunt.Api_HostAddress}}/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "test@test.com", 
+  "userName": "username",
+  "password": "Test123?"
+}
+
+###
+
+POST {{TheHunt.Api_HostAddress}}/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "Test123?"
+}

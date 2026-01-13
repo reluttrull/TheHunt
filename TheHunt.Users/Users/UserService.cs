@@ -1,25 +1,36 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using TheHunt.Common.Data;
 using TheHunt.Common.Model;
 
 namespace TheHunt.Users.Users
 {
     public class UserService : IUserService
     {
-        public Task<User?> GetUserByEmailAsync(string email)
+        private readonly GameContext _gameContext;
+
+        public UserService(GameContext gameContext)
         {
-            throw new NotImplementedException();
+            _gameContext = gameContext;
+        }
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.Email == email);
+            return user;
         }
 
-        public Task<User?> GetUserByIdAsync(Guid id)
+        public async Task<User?> GetUserByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.Id == id);
+            return user;
         }
 
-        public Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.RefreshToken == refreshToken);
+            return user;
         }
     }
     public interface IUserService

@@ -1,11 +1,14 @@
 using FastEndpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Reflection;
+using System.Text;
 using TheHunt.Common.Data;
 using TheHunt.Common.Extensions;
+using TheHunt.Common.Model;
 using TheHunt.Places.Extensions;
-using TheHunt.Places.Places.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,16 +20,37 @@ if (builder.Environment.IsDevelopment())
 builder.AddServiceDefaults();
 
 builder.Services.AddOpenApi();
-Assembly endpointsAssembly = typeof(Create).Assembly;
+Assembly placesEndpointsAssembly = typeof(TheHunt.Places.Places.Endpoints.Create).Assembly;
+Assembly usersEndpointsAssembly = typeof(TheHunt.Users.Users.Endpoints.Register).Assembly;
 builder.Services.AddFastEndpoints(options =>
 {
-    options.Assemblies = [endpointsAssembly];
+    options.Assemblies = [placesEndpointsAssembly, usersEndpointsAssembly];
 });
 
 var connectionString = builder.Configuration.GetConnectionString("gamedb");
 builder.Services.AddGameDbContext(connectionString!);
 
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<GameContext>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? builder.Configuration["JWT_ISSUER"],
+            ValidateAudience = true,
+            ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? builder.Configuration["JWT_AUDIENCE"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TOKEN_SECRET") ?? builder.Configuration["TOKEN_SECRET"]!)),
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true
+        };
+    });
+
 builder.Services.AddPlaceServices(builder.Configuration);
+builder.Services.AddUserServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -37,7 +61,6 @@ if (app.Environment.IsDevelopment())
     db.Database.Migrate();
 }
 
-
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
@@ -46,6 +69,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseFastEndpoints();
 
 app.Run();

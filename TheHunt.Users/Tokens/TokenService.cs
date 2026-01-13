@@ -1,5 +1,7 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -18,12 +20,14 @@ namespace TheHunt.Users.Tokens
     public class TokenService : ITokenService
     {
         private readonly GameContext _gameContext;
+        private readonly UserManager<User> _userManager;
         private string tokenSecret = string.Empty;
         private static readonly TimeSpan tokenLifetime = TimeSpan.FromMinutes(15);
         private readonly IConfiguration _config;
-        public TokenService(GameContext gameContext, IConfiguration config)
+        public TokenService(GameContext gameContext, UserManager<User> userManager, IConfiguration config)
         {
             _gameContext = gameContext;
+            _userManager = userManager;
             _config = config;
             tokenSecret = Environment.GetEnvironmentVariable("TOKEN_SECRET") ?? config.GetValue<string>("TOKEN_SECRET")!;
         }
@@ -65,9 +69,17 @@ namespace TheHunt.Users.Tokens
             return new RefreshTokenResponse(Convert.ToBase64String(randomNumber), DateTime.UtcNow.AddDays(14));
         }
 
-        public async Task RevokeTokenAsync(RevokeTokenRequest request)
+        public async Task<bool> RevokeTokenAsync(RevokeTokenRequest request)
         {
-            throw new NotImplementedException();
+            var user = await _gameContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+            if (user is null) return false;
+
+            user.RefreshToken = string.Empty;
+            user.RefreshTokenExpiry = new DateTime();
+            await _gameContext.SaveChangesAsync();
+
+            var result = await _userManager.RemoveAuthenticationTokenAsync(user, "Default", "RefreshToken");
+            return result.Succeeded;
         }
 
         public async Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires)
@@ -85,6 +97,6 @@ namespace TheHunt.Users.Tokens
         Task<string> GenerateAccessTokenAsync(User user);
         Task<RefreshTokenResponse> GenerateRefreshTokenAsync();
         Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires);
-        Task RevokeTokenAsync(RevokeTokenRequest request);
+        Task<bool> RevokeTokenAsync(RevokeTokenRequest request);
     }
 }
