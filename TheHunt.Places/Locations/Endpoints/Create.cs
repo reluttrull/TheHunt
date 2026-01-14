@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using TheHunt.Places.Locations.Endpoints;
 using TheHunt.Places.Locations;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using TheHunt.Common.Constants;
 
 namespace TheHunt.Places.Locations.Endpoints
 {
@@ -16,7 +18,7 @@ namespace TheHunt.Places.Locations.Endpoints
         public override void Configure()
         {
             Post("/locations");
-            AllowAnonymous();
+            Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
         public override async Task HandleAsync(CreateLocationRequest req, CancellationToken ct)

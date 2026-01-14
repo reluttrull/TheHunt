@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TheHunt.Common.Constants;
 
 namespace TheHunt.Places.Locations.Endpoints
 {
@@ -14,7 +15,7 @@ namespace TheHunt.Places.Locations.Endpoints
         public override void Configure()
         {
             Get("/locations/{Id}");
-            AllowAnonymous();
+            Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
         public override async Task HandleAsync(GetLocationByIdRequest req, CancellationToken ct)

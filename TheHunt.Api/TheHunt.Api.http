@@ -1,6 +1,11 @@
-@TheHunt.Api_HostAddress = http://localhost:5295
+@TheHunt.Api_HostAddress = https://localhost:7244
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MThhZTJiZC0wYTAzLTQzOTctOTAyMi0zNWFjOWJiNTUxYTkiLCJzdWIiOiJ1c2VybmFtZSIsInVzZXJpZCI6IjAxOWJiZWQyLWVmMTMtN2JhMi04YjkxLTVjNWVlMjg1NDFhYiIsImZyZWVfbWVtYmVyIjoidHJ1ZSIsIm5iZiI6MTc2ODQzMzA5NywiZXhwIjoxNzY4NDMzOTk3LCJpYXQiOjE3Njg0MzMwOTcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMzMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MDExIn0.7mnSl9PAvEx5QKhQpfSpl9T_bdEpMI7UA35rFc-994U
+@refresh = QBT93y5+kXlgBPkJo9DcXr4J6/mmD8HuvUbuR2BMWovEX2o0FOI0oVgX6bL9bpjcJ/+rj+oPf3LONQLEDn/aJQ==
+
+
 
 POST {{TheHunt.Api_HostAddress}}/locations/
+Authorization: Bearer {{token}}
 Accept: application/json
 Content-Type: application/json
 
@@ -12,12 +17,14 @@ Content-Type: application/json
 
 ###
 
-GET {{TheHunt.Api_HostAddress}}/locations/e0d0f4a8-b134-4a46-b17f-e19ca98eb028
+GET {{TheHunt.Api_HostAddress}}/locations/5f5800e7-85e7-466e-b0ae-b48767835d81
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
 POST {{TheHunt.Api_HostAddress}}/places/
+Authorization: Bearer {{token}}
 Accept: application/json
 Content-Type: application/json
 
@@ -36,6 +43,7 @@ Content-Type: application/json
 ###
 
 GET {{TheHunt.Api_HostAddress}}/places/cf15c3a5-c586-48af-94b2-326cb547c177
+Authorization: Bearer {{token}}
 Accept: application/json
 
 

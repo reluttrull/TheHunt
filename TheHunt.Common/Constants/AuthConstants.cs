@@ -1,4 +1,4 @@
-﻿namespace TheHunt.Users.Users
+﻿namespace TheHunt.Common.Constants
 {
     public static class AuthConstants
     {

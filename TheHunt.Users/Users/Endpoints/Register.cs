@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
+using TheHunt.Common.Constants;
 using TheHunt.Common.Model;
 
 namespace TheHunt.Users.Users.Endpoints
@@ -36,7 +37,7 @@ namespace TheHunt.Users.Users.Endpoints
                 if (existingUser is not null)
                 {
                     // todo: validate model properly
-                    validationErrors.Add(new ValidationFailure("Email", "A user already exists with that email address.")
+                    validationErrors.Add(new ValidationFailure("Email", "A654 user already exists with that email address.")
                     {
                         AttemptedValue = req.Email
                     });

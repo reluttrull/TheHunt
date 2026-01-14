@@ -5,10 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Reflection;
 using System.Text;
+using TheHunt.Common.Constants;
 using TheHunt.Common.Data;
 using TheHunt.Common.Extensions;
 using TheHunt.Common.Model;
 using TheHunt.Places.Extensions;
+using TheHunt.Users.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(x =>
+{
+    x.AddPolicy(AuthConstants.AdminUserPolicyName,
+        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+    x.AddPolicy(AuthConstants.PaidMemberUserPolicyName,
+        p => p.RequireAssertion(c => c.User.HasClaim(m => m is { Type: AuthConstants.PaidMemberUserClaimName, Value: "true" })
+            || c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" })));
+    x.AddPolicy(AuthConstants.FreeMemberUserPolicyName,
+        p => p.RequireAssertion(c => c.User.HasClaim(m => m is { Type: AuthConstants.FreeMemberUserClaimName, Value: "true" })
+            || c.User.HasClaim(m => m is { Type: AuthConstants.PaidMemberUserClaimName, Value: "true" })
+            || c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" })));
+});
+
 builder.Services.AddPlaceServices(builder.Configuration);
 builder.Services.AddUserServices(builder.Configuration);
 
@@ -69,6 +84,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
