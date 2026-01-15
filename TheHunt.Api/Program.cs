@@ -19,6 +19,15 @@ if (builder.Environment.IsDevelopment())
     DotNetEnv.Env.Load();
 }
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowClient", policy =>
+        policy.WithOrigins("http://localhost:60388")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
+});
+
 builder.AddServiceDefaults();
 
 builder.Services.AddOpenApi();
@@ -83,6 +92,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors("AllowClient");
 app.UseHttpsRedirection();
 app.UseRouting();
 
