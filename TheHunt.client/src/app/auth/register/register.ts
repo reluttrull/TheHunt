@@ -23,6 +23,7 @@ export class Register {
 
   submit() {
     this.isWaiting.set(true);
+    this.validationErrors.set([]);
     if (this.form.value.password != this.form.value.confirmPassword) {
       this.validationErrors.update(errs => [...errs, 'Typed passwords do not match.']);
       return;

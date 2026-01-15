@@ -37,14 +37,11 @@ namespace TheHunt.Users.Users.Endpoints
                 if (existingUser is not null)
                 {
                     // todo: validate model properly
-                    validationErrors.Add(new ValidationFailure("Email", "A654 user already exists with that email address.")
-                    {
-                        AttemptedValue = req.Email
-                    });
+                    AddError(r => r.Email, "A user already exists with that email address.");
                 }
-                if (validationErrors.Count > 0)
+                if (ValidationFailures.Count > 0)
                 {
-                    await HttpContext.Response.SendErrorsAsync(validationErrors, StatusCodes.Status409Conflict, cancellation: ct);
+                    await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
                     return;
                 }
 
@@ -65,6 +62,7 @@ namespace TheHunt.Users.Users.Endpoints
                         validationErrors.Add(new ValidationFailure(error.Code, error.Description));
                     }
                     await HttpContext.Response.SendErrorsAsync(validationErrors, StatusCodes.Status400BadRequest, cancellation: ct);
+                    return;
                 }
 
                 var addClaimUserResult = await _userManager.AddClaimAsync(user, new Claim(AuthConstants.FreeMemberUserClaimName, "true"));

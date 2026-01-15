@@ -1,5 +1,7 @@
 <h1>Register</h1>
-
+@if (isWaiting()) {
+    <span>Loading...</span>
+} @else {
 <form [formGroup]="form" (ngSubmit)="submit()" class="form">
     <div>
         <label for="email">Email</label>
@@ -18,6 +20,12 @@
         <input title="confirm password" type="password" formControlName="confirmPassword" />
     </div>
     <div>
+        @for (error of validationErrors(); track $index) {
+            <div class="error">{{ error }}</div>
+        }
+    </div>
+    <div>
         <button type="submit">Register</button>
     </div>
 </form>
+}
