@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using TheHunt.Common.Constants;
 
@@ -20,11 +21,26 @@ namespace TheHunt.Places.Places.Endpoints
 
         public override async Task HandleAsync(CreatePlaceRequest req, CancellationToken ct)
         {
-            var newPlace = req with { Id = Guid.NewGuid() };
+            var userIdClaim = User.FindFirst("userid")?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                await HttpContext.Response.SendUnauthorizedAsync(ct);
+                return;
+            }
+            var newPlace = req with { Id = Guid.NewGuid(), AddedByUserId = userId };
 
             await _placeService.CreatePlaceAsync(newPlace);
 
-            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { newPlace.Id }, newPlace);
+            var createdPlaceResponse = await _placeService.GetPlaceByIdAsync(newPlace.Id!.Value);
+
+            if (createdPlaceResponse is null)
+            {
+                await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
+                return;
+            }
+
+            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { createdPlaceResponse.Id }, createdPlaceResponse);
         }
     }
 }

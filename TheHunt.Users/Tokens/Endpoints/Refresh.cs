@@ -30,10 +30,12 @@ namespace TheHunt.Users.Tokens.Endpoints
             {
                 // todo: pass back specific error "Invalid refresh token" or "Expired refresh token"
                 await HttpContext.Response.SendUnauthorizedAsync(ct);
+                return;
             }
             if (user.RefreshTokenExpiry < DateTime.UtcNow)
             {
                 await HttpContext.Response.SendUnauthorizedAsync(ct);
+                return;
             }
             var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user);
             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync();

@@ -1,7 +1,6 @@
 @TheHunt.Api_HostAddress = https://localhost:7244
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MThhZTJiZC0wYTAzLTQzOTctOTAyMi0zNWFjOWJiNTUxYTkiLCJzdWIiOiJ1c2VybmFtZSIsInVzZXJpZCI6IjAxOWJiZWQyLWVmMTMtN2JhMi04YjkxLTVjNWVlMjg1NDFhYiIsImZyZWVfbWVtYmVyIjoidHJ1ZSIsIm5iZiI6MTc2ODQzMzA5NywiZXhwIjoxNzY4NDMzOTk3LCJpYXQiOjE3Njg0MzMwOTcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMzMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MDExIn0.7mnSl9PAvEx5QKhQpfSpl9T_bdEpMI7UA35rFc-994U
-@refresh = QBT93y5+kXlgBPkJo9DcXr4J6/mmD8HuvUbuR2BMWovEX2o0FOI0oVgX6bL9bpjcJ/+rj+oPf3LONQLEDn/aJQ==
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmOTYyZDUxNy01ZTFjLTQwZGEtOWNjZC03NjNmNGM4YjFjNDgiLCJzdWIiOiJ1c2VybmFtZSIsInVzZXJpZCI6IjAxOWJjMzdjLWY1YmItNzI1Mi1iZDMxLThjNmEwZjMyNGJlNSIsImZyZWVfbWVtYmVyIjoidHJ1ZSIsIm5iZiI6MTc2ODUxMTMxMSwiZXhwIjoxNzY4NTEyMjExLCJpYXQiOjE3Njg1MTEzMTEsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMzMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MDExIn0.W5vxiYmEXh2Y1Q2i9KBdC37jMKpBLRy4dYaC9r4-vkw
+@refresh = 2wy4Q56QiCizCea90EjSj7asEG7H189jlVwgceCOxELAABsCzkcwLArWpmBimdgI3048lVq8J4CLkE7lFH3NQg==
 
 
 POST {{TheHunt.Api_HostAddress}}/locations/
@@ -17,7 +16,7 @@ Content-Type: application/json
 
 ###
 
-GET {{TheHunt.Api_HostAddress}}/locations/5f5800e7-85e7-466e-b0ae-b48767835d81
+GET {{TheHunt.Api_HostAddress}}/locations/304c4a46-643f-4cc2-82fa-2332c2d3dbc7
 Authorization: Bearer {{token}}
 Accept: application/json
 
@@ -31,18 +30,17 @@ Content-Type: application/json
 {
   "id": null,
   "name": "Place name",
-  "locationId": "e0d0f4a8-b134-4a46-b17f-e19ca98eb028",
+  "locationId": "304c4a46-643f-4cc2-82fa-2332c2d3dbc7",
   "acceptedRadiusMeters": 5.0,
   "hint1": "East of downtown",
   "hint2": "Rhymes with orange",
   "hint3": "Famous crime happened here",
-  "addedByUserId": "e1700788-0d7d-49fe-b118-03fd09079dd9",
-  "addedDate": "2024-05-20T14:30:00Z"
+  "addedByUserId": null
 }
 
 ###
 
-GET {{TheHunt.Api_HostAddress}}/places/cf15c3a5-c586-48af-94b2-326cb547c177
+GET {{TheHunt.Api_HostAddress}}/places/86386e16-db2f-420a-8c13-4c5a538ac0c5
 Authorization: Bearer {{token}}
 Accept: application/json
 
@@ -69,3 +67,19 @@ Content-Type: application/json
   "email": "test@test.com",
   "password": "Test123?"
 }
+
+###
+
+POST {{TheHunt.Api_HostAddress}}/revoke
+Accept: application/json
+Content-Type: application/json
+
+{ "refreshToken": "2wrnwL+bvJ5I9d35KmCjJCFBsc9WOCzNRBe+ANet1ZyXx61YMTbFdG40YHU49WbuF9wf1wfFVFEoq2Nli9Y3uQ==" }
+
+###
+
+POST {{TheHunt.Api_HostAddress}}/refresh
+Accept: application/json
+Content-Type: application/json
+
+{ "refreshToken": "2wrnwL+bvJ5I9d35KmCjJCFBsc9WOCzNRBe+ANet1ZyXx61YMTbFdG40YHU49WbuF9wf1wfFVFEoq2Nli9Y3uQ==" }

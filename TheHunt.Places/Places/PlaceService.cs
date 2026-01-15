@@ -28,7 +28,7 @@ namespace TheHunt.Places.Places
                 Hint1 = newPlace.Hint1,
                 Hint2 = newPlace.Hint2,
                 Hint3 = newPlace.Hint3,
-                AddedByUserId = newPlace.AddedByUserId,
+                AddedByUserId = newPlace.AddedByUserId!.Value,
                 AddedDate = DateTime.UtcNow
             };
             await _gameContext.Places.AddAsync(place);

@@ -43,7 +43,10 @@ namespace TheHunt.Users.Users.Endpoints
                     });
                 }
                 if (validationErrors.Count > 0)
+                {
                     await HttpContext.Response.SendErrorsAsync(validationErrors, StatusCodes.Status409Conflict, cancellation: ct);
+                    return;
+                }
 
                 User user = new()
                 {
@@ -73,6 +76,7 @@ namespace TheHunt.Users.Users.Endpoints
                         validationErrors.Add(new ValidationFailure(error.Code, error.Description));
                     }
                     await HttpContext.Response.SendErrorsAsync(validationErrors, StatusCodes.Status400BadRequest, cancellation: ct);
+                    return;
                 }
 
                 var response = new RegisterResponse(user.Id, user.Email, user.UserName, user.JoinedDate);

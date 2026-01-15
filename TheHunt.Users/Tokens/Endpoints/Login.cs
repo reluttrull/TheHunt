@@ -32,11 +32,15 @@ namespace TheHunt.Users.Tokens.Endpoints
             if (user is null)
             {
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                return;
             }
 
             var passwordValid = await _userManager.CheckPasswordAsync(user!, req.Password);
             if (!passwordValid)
+            {
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
 
             string accessToken = await _tokenService.GenerateAccessTokenAsync(user!);
             RefreshTokenResponse refreshToken = await _tokenService.GenerateRefreshTokenAsync();
