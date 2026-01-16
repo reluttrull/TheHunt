@@ -10,5 +10,6 @@ namespace TheHunt.Common.Model
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public DateTime RecordedDate { get; set; }
+        public Guid RecordedByUser { get; set; }
     }
 }

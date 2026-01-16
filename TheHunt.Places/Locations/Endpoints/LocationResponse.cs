@@ -4,5 +4,6 @@
         Guid Id,
         decimal Latitude,
         decimal Longitude,
-        DateTime RecordedDate);
+        DateTime RecordedDate,
+        Guid RecordedByUser);
 }
