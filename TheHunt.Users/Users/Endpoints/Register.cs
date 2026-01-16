@@ -39,6 +39,11 @@ namespace TheHunt.Users.Users.Endpoints
                     // todo: validate model properly
                     AddError(r => r.Email, "A user already exists with that email address.");
                 }
+                existingUser = await _userService.GetUserByUserNameAsync(req.UserName);
+                if (existingUser is not null)
+                {
+                    AddError(r => r.UserName, "A user already exists with that username.");
+                }
                 if (ValidationFailures.Count > 0)
                 {
                     await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);

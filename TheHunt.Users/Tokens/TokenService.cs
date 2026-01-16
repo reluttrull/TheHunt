@@ -85,7 +85,7 @@ namespace TheHunt.Users.Tokens
 
         public async Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires)
         {
-            var user = _gameContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _gameContext.Users.FindAsync(userId);
             if (user is null) return false;
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiry = expires;

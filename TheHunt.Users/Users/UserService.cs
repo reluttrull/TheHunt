@@ -25,7 +25,7 @@ namespace TheHunt.Users.Users
 
         public async Task<User?> GetUserByIdAsync(Guid id)
         {
-            var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.Id == id);
+            var user = await _gameContext.Users.FindAsync(id);
             return user;
         }
 
@@ -34,10 +34,17 @@ namespace TheHunt.Users.Users
             var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.RefreshToken == refreshToken);
             return user;
         }
+
+        public async Task<User?> GetUserByUserNameAsync(string userName)
+        {
+            var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.UserName == userName);
+            return user;
+        }
     }
     public interface IUserService
     {
         Task<User?> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByUserNameAsync(string userName);
         Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
         Task<User?> GetUserByIdAsync(Guid id);
     }

@@ -39,7 +39,7 @@ namespace TheHunt.Places.Locations
 
         public async Task<LocationResponse?> GetLocationByIdAsync(Guid id)
         {
-            var location = await _gameContext.Locations.FirstOrDefaultAsync<Location>(p => p.Id == id);
+            var location = await _gameContext.Locations.FindAsync(id);
             if (location is null) return null;
             // todo: tidy up mapping
             return new LocationResponse(location.Id, location.Latitude, location.Longitude, location.RecordedDate);
