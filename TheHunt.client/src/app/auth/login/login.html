@@ -2,15 +2,21 @@
     <span>Loading...</span>
 } @else {
 <form [formGroup]="form" (ngSubmit)="submit()" class="form">
-    <label for="email">Email</label>
-    <input title="email" type="email" formControlName="email">
-    <label for="password">Password</label>
-    <input title="password" type="password" formControlName="password">
+    <div>
+        <label for="email">Email</label>
+        <input title="email" type="email" formControlName="email">
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input title="password" type="password" formControlName="password">
+    </div>
     <div>
         @for (error of validationErrors(); track $index) {
             <div class="error">{{ error }}</div>
         }
     </div>
-    <button type="submit">Log in</button>
+    <div>
+        <button type="submit">Log in</button>
+    </div>
 </form>
 }

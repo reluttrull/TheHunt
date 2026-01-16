@@ -1,2 +1,5 @@
 <h1>The Hunt</h1>
+@if (isLoggedIn()) {
+    Welcome, {{ user()?.userName }}
+}
 <router-outlet></router-outlet>

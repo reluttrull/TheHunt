@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ namespace TheHunt.Users.Users
         {
             _gameContext = gameContext;
         }
+
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             var user = await _gameContext.Users.FirstOrDefaultAsync<User>(u => u.Email == email);

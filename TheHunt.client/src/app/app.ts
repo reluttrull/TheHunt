@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,12 @@ import { Component, signal } from '@angular/core';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('TheHunt.client');
+  auth = inject(AuthService);
+  user = this.auth.user;
+
+  logout() {
+    this.auth.logout();
+  }
+
+  isLoggedIn = computed(() => !!this.user());
 }
