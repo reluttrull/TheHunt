@@ -1,3 +1,27 @@
+body {
+    /* global dark theme for now */
+    background-color: #262626;
+    color: #eeeeee;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  background-color: #262626 !important; /* A dark color for the background */
+  color: #eeeeee !important;           /* White or light color for the text */
+  caret-color: #157cfc !important;     /* Color of the text cursor */
+}
+
+h1, h2, h3, h4, h5, p, div, span, label, input, button {
+  font-family: "Sono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "MONO" 1;
+}
+
 .form * {
     margin: 3px 3px;
 }

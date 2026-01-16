@@ -1,5 +1,5 @@
-<h1>The Hunt</h1>
+<h1 id="logo">The Hunt</h1>
 @if (isLoggedIn()) {
-    Welcome, {{ user()?.userName }}
+    <div>Welcome, {{ user()?.userName }}</div>
 }
 <router-outlet></router-outlet>
