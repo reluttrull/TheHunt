@@ -46,6 +46,12 @@ namespace TheHunt.Users.Tokens.Endpoints
             RefreshTokenResponse refreshToken = await _tokenService.GenerateRefreshTokenAsync();
             var updated = await _tokenService.UpdateRefreshTokenAsync(user!.Id, refreshToken.RefreshToken, refreshToken.Expires);
 
+            if (!updated)
+            {
+                await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
+                return;
+            }
+
             await HttpContext.Response.SendOkAsync(new TokenResponse(accessToken, refreshToken.RefreshToken), cancellation: ct);
         }
     }

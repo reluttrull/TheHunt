@@ -25,7 +25,7 @@ namespace TheHunt.Places.Places.Endpoints
 
             if (!Guid.TryParse(userIdClaim, out var userId))
             {
-                await HttpContext.Response.SendUnauthorizedAsync(ct);
+                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
             var newPlace = req with { Id = Guid.NewGuid(), AddedByUserId = userId };
@@ -40,7 +40,7 @@ namespace TheHunt.Places.Places.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { createdPlaceResponse.Id }, createdPlaceResponse);
+            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { createdPlaceResponse.Id }, createdPlaceResponse, cancellation: ct);
         }
     }
 }

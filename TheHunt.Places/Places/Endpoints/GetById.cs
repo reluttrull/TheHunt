@@ -24,11 +24,11 @@ namespace TheHunt.Places.Places.Endpoints
 
             if (place is null)
             {
-                await HttpContext.Response.SendNotFoundAsync();
+                await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
                 return;
             }
 
-            await HttpContext.Response.SendAsync(place);
+            await HttpContext.Response.SendAsync(place, cancellation: ct);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace TheHunt.Users.Users.Endpoints
 
                 var response = new RegisterResponse(user.Id, user.Email, user.UserName, user.JoinedDate);
 
-                await HttpContext.Response.SendCreatedAtAsync<GetById>(new { user.Id }, response);
+                await HttpContext.Response.SendCreatedAtAsync<GetById>(new { user.Id }, response, cancellation: ct);
             }
             catch (Exception e)
             {

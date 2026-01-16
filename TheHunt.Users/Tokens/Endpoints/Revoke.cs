@@ -26,11 +26,15 @@ namespace TheHunt.Users.Tokens.Endpoints
             if (user is null)
             {
                 // todo: pass back specific error "Invalid refresh token" or "Expired refresh token"
-                await HttpContext.Response.SendUnauthorizedAsync(ct);
+                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
             var success = await _tokenService.RevokeTokenAsync(req);
-            if (!success) await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
+            if (!success)
+            {
+                await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
+                return;
+            }
             await HttpContext.Response.SendOkAsync(cancellation: ct);
 
         }
