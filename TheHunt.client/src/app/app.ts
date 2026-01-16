@@ -17,7 +17,6 @@ export class App {
   }
 
   isLoggedIn = computed(() => {
-    console.log('computing', this.user());
     return !!this.user();
 });
 }

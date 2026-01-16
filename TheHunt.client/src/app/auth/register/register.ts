@@ -33,11 +33,10 @@ export class Register {
     this.auth.register(this.form.value).subscribe({
       next: (res) => {
         this.isWaiting.set(false);
-        console.log(res);
         this.router.navigate(['login']);
       },
       error: (err) => {
-        console.log(err);
+        console.error(err);
         if (err.status == 400 && err.error?.errors) {
           for (var currentError in err.error.errors) {
             this.validationErrors.update(errs => [...errs, `${currentError}: ${err.error.errors[currentError]}`]);

@@ -61,3 +61,7 @@ h1, h2, h3, h4, h5, p, div, span, label, input, button {
 .error {
     color: red;
 }
+
+.padded-rows * {
+    padding: 10px 0px;
+}

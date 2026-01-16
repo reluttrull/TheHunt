@@ -76,12 +76,10 @@ export class AuthService {
     }
     
     hasToken(): boolean {
-        console.log(this.getAccessToken());
         return this.getAccessToken() != null;
     }
     
     private loadUser() {
-        console.log(`${this.baseUrl}/users/me`);
         this.http.get<UserResponse>(`${this.baseUrl}/users/me`)
         .subscribe({
             next: user => this._user.set(user),

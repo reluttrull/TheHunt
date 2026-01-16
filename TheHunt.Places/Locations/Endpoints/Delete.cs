@@ -17,7 +17,7 @@ namespace TheHunt.Places.Locations.Endpoints
 
         public override void Configure()
         {
-            Post("/locations");
+            Delete("/locations");
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 

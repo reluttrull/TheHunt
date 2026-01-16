@@ -34,7 +34,9 @@ namespace TheHunt.Places.Locations.Endpoints
 
             await _locationService.CreateLocationAsync(newLocation);
 
-            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { newLocation.Id }, newLocation, cancellation: ct);
+            var createdLocation = await _locationService.GetLocationByIdAsync(newLocation.Id!.Value, ct);
+
+            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { newLocation.Id }, createdLocation, cancellation: ct);
         }
     }
 }
