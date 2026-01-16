@@ -31,14 +31,16 @@ namespace TheHunt.Users.Tokens.Endpoints
             // todo: send more useful errors
             if (user is null)
             {
-                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                AddError(r => r.Email, "Invalid email address.");
+                await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
                 return;
             }
 
             var passwordValid = await _userManager.CheckPasswordAsync(user!, req.Password);
             if (!passwordValid)
             {
-                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                AddError(r => r.Password, "Invalid password.");
+                await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
                 return;
             }
 
