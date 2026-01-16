@@ -10,6 +10,7 @@ import { AuthService } from './auth/auth.service';
 export class App {
   auth = inject(AuthService);
   user = this.auth.user;
+  currentYear = new Date().getFullYear();
 
   logout() {
     this.auth.logout();

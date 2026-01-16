@@ -11,7 +11,7 @@ using TheHunt.Users.Users;
 namespace TheHunt.Users.Tokens.Endpoints
 {
     public class Refresh(ITokenService tokenService, IUserService userService) :
-        Endpoint<RefreshRequest, RefreshTokenResponse>
+        Endpoint<RefreshRequest, TokenResponse>
     {
         private readonly ITokenService _tokenService = tokenService;
         private readonly IUserService _userService = userService;
@@ -48,7 +48,7 @@ namespace TheHunt.Users.Tokens.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendOkAsync(newRefreshToken, cancellation: ct);
+            await HttpContext.Response.SendOkAsync(new TokenResponse(newAccessToken, newRefreshToken.RefreshToken), cancellation: ct);
         }
     }
 }

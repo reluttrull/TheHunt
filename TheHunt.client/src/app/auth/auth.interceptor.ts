@@ -7,7 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
 
   // never intercept refresh itself
-  if (req.url.includes('/auth/refresh')) {
+  if (req.url.endsWith('/refresh')) {
     return next(req);
   }
 
@@ -36,7 +36,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       // attempt refresh once, then retry original request
       return auth.refreshToken().pipe(
         switchMap(res => {
-          const retryReq = authReq.clone({
+          const retryReq = req.clone({
             setHeaders: {
               Authorization: `Bearer ${res.accessToken}`
             }

@@ -4,13 +4,36 @@ body {
     color: #eeeeee;
 }
 
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin:0;
+}
+
+header {
+    background-color: #2b2b2b;
+    height:50px;
+}
+
+main {
+    flex-grow: 1;
+}
+
+footer {
+    background-color: #2b2b2b;
+    height:50px;
+    margin-top:auto;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea {
-  background-color: #262626 !important; /* A dark color for the background */
-  color: #eeeeee !important;           /* White or light color for the text */
-  caret-color: #157cfc !important;     /* Color of the text cursor */
+  background-color: #262626 !important;
+  color: #eeeeee !important;
+  caret-color: #157cfc !important;
 }
 
 h1, h2, h3, h4, h5, p, div, span, label, input, button {
