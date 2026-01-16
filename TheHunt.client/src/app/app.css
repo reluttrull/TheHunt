@@ -15,9 +15,20 @@
 .subtle-link {
     font-weight: bolder;
     text-decoration: none;
+}
+
+.white-link {
+    color: #cccccc;
+}
+
+.white-link:hover {
+    color: #ffffff;
+}
+
+.green-link {
     color: rgba(13, 190, 51, 0.842);
 }
 
-.subtle-link:hover {
+.green-link:hover {
     color: rgba(36, 255, 84, 0.842);
 }
