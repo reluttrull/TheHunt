@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from '../auth.service';
 
@@ -11,6 +12,7 @@ import { AuthService } from '../auth.service';
 })
 export class Register {
   auth = inject(AuthService);
+  router = inject(Router);
   fb = inject(FormBuilder);
   form:FormGroup = this.fb.group({
     email: [null],
@@ -32,7 +34,7 @@ export class Register {
       next: (res) => {
         this.isWaiting.set(false);
         console.log(res);
-        // todo: navigate to login
+        this.router.navigate(['login']);
       },
       error: (err) => {
         console.log(err);
