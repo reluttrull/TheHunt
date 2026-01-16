@@ -17,6 +17,16 @@ export class AuthService {
     private readonly _user = signal<UserResponse | null>(null);
     readonly user = this._user.asReadonly();
 
+    constructor() {
+        effect(() => {
+            if (this.hasTokenSignal()) {
+                this.loadUser();
+            } else {
+                this._user.set(null);
+            }
+        });
+    }
+
     register(formData:RegisterRequest) {
         return this.http.post(`${this.baseUrl}/register`, formData);
     }
@@ -54,7 +64,7 @@ export class AuthService {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         localStorage.removeItem(REFRESH_TOKEN_KEY);
         this.hasTokenSignal.set(false);
-        this.loadUser();
+        this._user.set(null);
     }
     
     getAccessToken(): string | null {

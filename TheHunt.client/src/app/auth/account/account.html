@@ -1,0 +1,14 @@
+<h1>Account Info</h1>
+
+<div class="padded-rows">
+    <div>
+        <span><strong>Email address: </strong></span>
+        <span>{{ user()?.email }}</span>
+    </div><div>
+        <span><strong>Username: </strong></span>
+        <span>{{ user()?.userName }}</span>
+    </div><div>
+        <span><strong>Member since: </strong></span>
+        <span>{{ user()?.joinedDate }}</span>
+    </div>
+</div>

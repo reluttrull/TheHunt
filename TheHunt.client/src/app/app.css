@@ -3,3 +3,21 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.vertical-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.subtle-link {
+    font-weight: bolder;
+    text-decoration: none;
+    color: rgba(13, 190, 51, 0.842);
+}
+
+.subtle-link:hover {
+    color: rgba(36, 255, 84, 0.842);
+}

@@ -1,5 +1,10 @@
-<h1 id="logo">The Hunt</h1>
-@if (isLoggedIn()) {
-    <div>Welcome, {{ user()?.userName }}</div>
-}
+<header class="two-column-flex-container">
+    <h1 id="logo">The Hunt</h1>
+    @if (isLoggedIn()) {
+        <div class="vertical-flex">
+            <div>Welcome, <a class="subtle-link" href="account">{{ user()?.userName }}</a></div>
+            <button type="button" (click)="logout()">Log out</button>
+        </div>
+    }
+</header>
 <router-outlet></router-outlet>

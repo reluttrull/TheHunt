@@ -22,6 +22,15 @@ h1, h2, h3, h4, h5, p, div, span, label, input, button {
     "MONO" 1;
 }
 
+.two-column-flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
 .form * {
     margin: 3px 3px;
 }

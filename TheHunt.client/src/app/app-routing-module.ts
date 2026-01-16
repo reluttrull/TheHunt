@@ -4,11 +4,13 @@ import { App } from './app';
 import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
+import { Account } from './auth/account/account';
 import { authGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   { path: 'register', component: Register },
   { path: 'login', component: Login },
+  { path: 'account', component: Account, pathMatch: 'full', canActivate: [authGuard] },
   { path: '', component: Home, pathMatch: 'full', canActivate: [authGuard] }
 ];
 

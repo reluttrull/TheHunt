@@ -15,5 +15,8 @@ export class App {
     this.auth.logout();
   }
 
-  isLoggedIn = computed(() => !!this.user());
+  isLoggedIn = computed(() => {
+    console.log('computing', this.user());
+    return !!this.user();
+});
 }
