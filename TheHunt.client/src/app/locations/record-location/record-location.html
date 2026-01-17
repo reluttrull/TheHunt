@@ -1,14 +1,4 @@
 <button (click)="record()">Record location</button>
 @if (locationData()) {
-    <div class="padded-rows">
-        <div>
-            <span><strong>Latitude: </strong></span><span>{{ locationData()?.latitude }}</span>
-        </div>
-        <div>
-            <span><strong>Longitude: </strong></span><span>{{ locationData()?.longitude }}</span>
-        </div>
-        <div>
-            <span><strong>Recorded date: </strong></span><span>{{ locationData()?.recordedDate | date:"MMM dd, yyyy 'at' hh:mm a" }}</span>
-        </div>
-    </div>
+    <app-location [location]="locationData()!" />
 }

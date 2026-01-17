@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Location } from '../location/location';
 import { LocationService } from '../location.service';
 import { LocationResponse } from '../interfaces';
 
 @Component({
   selector: 'app-record-location',
-  imports: [DatePipe],
+  imports: [Location],
   templateUrl: './record-location.html',
   styleUrl: './record-location.css',
 })

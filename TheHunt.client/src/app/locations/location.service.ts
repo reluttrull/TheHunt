@@ -17,4 +17,12 @@ export class LocationService {
         };
         return this.http.post<LocationResponse>(`${this.baseUrl}/locations`, request);
     }
+
+    getLocation(id:string) {
+        return this.http.get<LocationResponse>(`${this.baseUrl}/locations/${id}`);
+    }
+
+    getAllLocationsForUser() {
+        return this.http.get<LocationResponse[]>(`${this.baseUrl}/locations/me`);
+    }
 }

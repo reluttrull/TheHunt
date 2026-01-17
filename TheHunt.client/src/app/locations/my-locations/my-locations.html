@@ -1,0 +1,6 @@
+<h2>My Locations</h2>
+<div class="maps-container">
+    @for (location of myLocations(); track location.id) {
+        <app-location [location]="location"></app-location>
+    }
+</div>

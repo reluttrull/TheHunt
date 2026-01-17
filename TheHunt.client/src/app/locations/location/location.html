@@ -1,0 +1,21 @@
+<div class="two-column-flex-container">
+    <div class="small-map"
+        leaflet 
+        [leafletOptions]="options">
+        <div [leafletLayer]="layer"></div>
+    </div>
+    <div>
+        <div class="padded-rows">
+            <div>
+                <span><strong>Latitude: </strong></span><span>{{ location().latitude }}</span>
+            </div>
+            <div>
+                <span><strong>Longitude: </strong></span><span>{{ location().longitude }}</span>
+            </div>
+            <div>
+                <span><strong>Recorded date: </strong></span><span>{{ location().recordedDate | date:"MMM dd, yyyy 'at' hh:mm a" }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- todo: these divs need to orient vertically when it gets too narrow -->
