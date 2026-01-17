@@ -28,7 +28,6 @@ namespace TheHunt.Users.Tokens.Endpoints
         {
             var user = await _userService.GetUserByEmailAsync(req.Email);
 
-            // todo: send more useful errors
             if (user is null)
             {
                 AddError(r => r.Email, "Invalid email address.");

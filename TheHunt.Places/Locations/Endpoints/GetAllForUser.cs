@@ -27,7 +27,7 @@ namespace TheHunt.Places.Locations.Endpoints
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var locations = await _locationService.GetAllLocationsForUserAsync(userId);
+            var locations = await _locationService.GetAllLocationsForUserAsync(userId, ct);
 
             await HttpContext.Response.SendAsync(locations, cancellation: ct);
         }

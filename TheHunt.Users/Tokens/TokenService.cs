@@ -23,7 +23,7 @@ namespace TheHunt.Users.Tokens
         private readonly GameContext _gameContext;
         private readonly UserManager<User> _userManager;
         private string tokenSecret = string.Empty;
-        private static readonly TimeSpan tokenLifetime = TimeSpan.FromMinutes(2); // todo: make longer after testing
+        private static readonly TimeSpan tokenLifetime = TimeSpan.FromMinutes(10);
         private readonly IConfiguration _config;
         public TokenService(GameContext gameContext, UserManager<User> userManager, IConfiguration config)
         {

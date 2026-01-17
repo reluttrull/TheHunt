@@ -44,9 +44,8 @@ namespace TheHunt.Places.Places
         {
             var place = await _gameContext.Places.FindAsync(id);
             if (place is null) return null;
-            // todo: tidy up mapping
-            return new PlaceResponse(place.Id, place.Name, place.LocationId, 
-                place.AcceptedRadiusMeters, place.AddedByUserId, place.AddedDate);
+            
+            return place.MapToResponse();
         }
 
         public Task<List<PlaceResponse>> ListPlacesAsync()

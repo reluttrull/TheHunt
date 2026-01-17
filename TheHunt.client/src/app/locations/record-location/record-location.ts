@@ -52,6 +52,11 @@ export class RecordLocation {
           this.error = error.message;
           console.error('Geolocation error:', error);
           reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
         }
       );
     });

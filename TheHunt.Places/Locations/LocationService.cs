@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TheHunt.Common.Data;
+using TheHunt.Common.Extensions;
 using TheHunt.Common.Model;
 using TheHunt.Places.Locations.Endpoints;
 using TheHunt.Places.Places.Endpoints;
@@ -25,7 +26,7 @@ namespace TheHunt.Places.Locations
             {
                 Id = newLocation.Id!.Value,
                 Latitude = newLocation.Latitude,
-                Longitude = newLocation.Longitude, // todo: consider standardizing precision early
+                Longitude = newLocation.Longitude,
                 RecordedDate = DateTime.UtcNow,
                 RecordedByUser = newLocation.RecordedByUser!.Value
             };
@@ -48,7 +49,8 @@ namespace TheHunt.Places.Locations
         {
             return await _gameContext.Locations
                 .Where(l => l.RecordedByUser == id)
-                .Select(l => new LocationResponse(l.Id, l.Latitude, l.Longitude, l.RecordedDate, l.RecordedByUser))
+                .OrderByDescending(l => l.RecordedDate)
+                .Select(l => l.MapToResponse())
                 .ToListAsync(token);
         }
 
@@ -56,14 +58,20 @@ namespace TheHunt.Places.Locations
         {
             var location = await _gameContext.Locations.FindAsync(id);
             if (location is null) return null;
-            // todo: tidy up mapping
-            return new LocationResponse(location.Id, location.Latitude, location.Longitude, location.RecordedDate, location.RecordedByUser);
+            
+            return location.MapToResponse();
         }
 
         public async Task<IEnumerable<LocationResponse>> GetAllLocationsAsync(GetAllLocationsRequest request, CancellationToken token = default)
         {
             return await _gameContext.Locations
-                .Select(l => new LocationResponse(l.Id, l.Latitude, l.Longitude, l.RecordedDate, l.RecordedByUser)) // todo: filter based on request
+                .WhereIf(request.UserId is not null, l => l.RecordedByUser == request.UserId)
+                .WhereIf(request.MinLatitude is not null, l => l.Latitude >= request.MinLatitude)
+                .WhereIf(request.MaxLatitude is not null, l => l.Latitude <= request.MaxLatitude)
+                .WhereIf(request.MinLongitude is not null, l => l.Longitude >= request.MinLongitude)
+                .WhereIf(request.MaxLongitude is not null, l => l.Longitude <= request.MaxLongitude)
+                .OrderByDescending(l => l.RecordedDate)
+                .Select(l => l.MapToResponse())
                 .ToListAsync(token);
         }
     }

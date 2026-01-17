@@ -16,6 +16,9 @@
       <Deploy />
     </Project>
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+  </Folder>
   <Folder Name="/Testing/">
     <Project Path="TheHunt.Tests/TheHunt.Tests.csproj" />
   </Folder>

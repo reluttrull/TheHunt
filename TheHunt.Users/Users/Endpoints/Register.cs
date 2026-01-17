@@ -36,7 +36,6 @@ namespace TheHunt.Users.Users.Endpoints
                 List<ValidationFailure> validationErrors = [];
                 if (existingUser is not null)
                 {
-                    // todo: validate model properly
                     AddError(r => r.Email, "A user already exists with that email address.");
                 }
                 existingUser = await _userService.GetUserByUserNameAsync(req.UserName);
