@@ -4,17 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TheHunt.Common.Constants;
+using TheHunt.Places.Places;
+using TheHunt.Places.Places.Endpoints;
 
-namespace TheHunt.Places.Locations.Endpoints
+namespace TheHunt.Places.PLaces.Endpoints
 {
-    public class GetAllForUser(ILocationService locationService) :
-        EndpointWithoutRequest<IEnumerable<LocationResponse>>
+    public class GetAllForUser(IPlaceService placeService) :
+        EndpointWithoutRequest<IEnumerable<PlaceResponse>>
     {
-        private readonly ILocationService _locationService = locationService;
+        private readonly IPlaceService _placeService = placeService;
 
         public override void Configure()
         {
-            Get("/locations/me");
+            Get("/places/me");
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
@@ -27,9 +29,9 @@ namespace TheHunt.Places.Locations.Endpoints
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var locations = await _locationService.GetAllLocationsForUserAsync(userId, ct);
+            var places = await _placeService.GetAllPlacesForUserAsync(userId, ct);
 
-            await HttpContext.Response.SendAsync(locations.Select(l => l.MapToResponse()), cancellation: ct);
+            await HttpContext.Response.SendAsync(places.Select(p => p.MapToResponse()), cancellation: ct);
         }
     }
 }

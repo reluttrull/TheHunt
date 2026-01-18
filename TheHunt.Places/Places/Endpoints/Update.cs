@@ -1,25 +1,23 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Text;
 using TheHunt.Common.Constants;
 
 namespace TheHunt.Places.Places.Endpoints
 {
-    public class Create(IPlaceService placeService) :
-        Endpoint<CreatePlaceRequest, PlaceResponse>
+    public class Update(IPlaceService placeService) :
+        Endpoint<UpdatePlaceRequest, PlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
 
         public override void Configure()
         {
-            Post("/places");
+            Put("/places");
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
-        public override async Task HandleAsync(CreatePlaceRequest req, CancellationToken ct)
+        public override async Task HandleAsync(UpdatePlaceRequest req, CancellationToken ct)
         {
             var userIdClaim = User.FindFirst("userid")?.Value;
 
@@ -28,19 +26,22 @@ namespace TheHunt.Places.Places.Endpoints
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var newPlace = req with { Id = Guid.NewGuid(), AddedByUserId = userId };
 
-            await _placeService.CreatePlaceAsync(newPlace);
+            var placeToDelete = await _placeService.GetPlaceByIdAsync(req.Id);
+            if (placeToDelete is null) return;
+            if (placeToDelete.AddedByUserId != userId)
+            {
+                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
 
-            var createdPlace = await _placeService.GetPlaceByIdAsync(newPlace.Id!.Value);
-
-            if (createdPlace is null)
+            var place = await _placeService.UpdatePlaceAsync(req.Id, req, ct);
+            if (place is null)
             {
                 await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
                 return;
             }
-
-            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { createdPlace.Id }, createdPlace.MapToResponse(), cancellation: ct);
+            await HttpContext.Response.SendOkAsync(place.MapToResponse(), cancellation: ct);
         }
     }
 }

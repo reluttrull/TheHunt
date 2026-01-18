@@ -28,7 +28,7 @@ namespace TheHunt.Places.Places.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendAsync(place, cancellation: ct);
+            await HttpContext.Response.SendAsync(place.MapToResponse(), cancellation: ct);
         }
     }
 }

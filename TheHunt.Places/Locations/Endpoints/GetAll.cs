@@ -22,7 +22,7 @@ namespace TheHunt.Places.Locations.Endpoints
         {
             var locations = await _locationService.GetAllLocationsAsync(req);
 
-            await HttpContext.Response.SendAsync(locations, cancellation: ct);
+            await HttpContext.Response.SendAsync(locations.Select(l => l.MapToResponse()), cancellation: ct);
         }
     }
 }

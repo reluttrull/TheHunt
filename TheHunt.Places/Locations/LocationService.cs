@@ -45,24 +45,23 @@ namespace TheHunt.Places.Locations
             return result > 0;
         }
 
-        public async Task<IEnumerable<LocationResponse>> GetAllLocationsForUserAsync(Guid id, CancellationToken token = default)
+        public async Task<IEnumerable<Location>> GetAllLocationsForUserAsync(Guid id, CancellationToken token = default)
         {
             return await _gameContext.Locations
                 .Where(l => l.RecordedByUser == id)
                 .OrderByDescending(l => l.RecordedDate)
-                .Select(l => l.MapToResponse())
                 .ToListAsync(token);
         }
 
-        public async Task<LocationResponse?> GetLocationByIdAsync(Guid id, CancellationToken token = default)
+        public async Task<Location?> GetLocationByIdAsync(Guid id, CancellationToken token = default)
         {
             var location = await _gameContext.Locations.FindAsync(id);
             if (location is null) return null;
             
-            return location.MapToResponse();
+            return location;
         }
 
-        public async Task<IEnumerable<LocationResponse>> GetAllLocationsAsync(GetAllLocationsRequest request, CancellationToken token = default)
+        public async Task<IEnumerable<Location>> GetAllLocationsAsync(GetAllLocationsRequest request, CancellationToken token = default)
         {
             return await _gameContext.Locations
                 .WhereIf(request.UserId is not null, l => l.RecordedByUser == request.UserId)
@@ -71,16 +70,15 @@ namespace TheHunt.Places.Locations
                 .WhereIf(request.MinLongitude is not null, l => l.Longitude >= request.MinLongitude)
                 .WhereIf(request.MaxLongitude is not null, l => l.Longitude <= request.MaxLongitude)
                 .OrderByDescending(l => l.RecordedDate)
-                .Select(l => l.MapToResponse())
                 .ToListAsync(token);
         }
     }
 
     public interface ILocationService
     {
-        Task<IEnumerable<LocationResponse>> GetAllLocationsAsync(GetAllLocationsRequest request, CancellationToken token = default);
-        Task<LocationResponse?> GetLocationByIdAsync(Guid id, CancellationToken token = default);
-        Task<IEnumerable<LocationResponse>> GetAllLocationsForUserAsync(Guid id, CancellationToken token = default);
+        Task<IEnumerable<Location>> GetAllLocationsAsync(GetAllLocationsRequest request, CancellationToken token = default);
+        Task<Location?> GetLocationByIdAsync(Guid id, CancellationToken token = default);
+        Task<IEnumerable<Location>> GetAllLocationsForUserAsync(Guid id, CancellationToken token = default);
         Task CreateLocationAsync(CreateLocationRequest newLocation, CancellationToken token = default);
         Task<bool> DeleteLocationAsync(Guid id, CancellationToken token = default);
         // todo: update

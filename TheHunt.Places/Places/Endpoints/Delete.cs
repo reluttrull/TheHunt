@@ -8,20 +8,20 @@ using TheHunt.Places.Locations;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using TheHunt.Common.Constants;
 
-namespace TheHunt.Places.Locations.Endpoints
+namespace TheHunt.Places.Places.Endpoints
 {
-    public class Create(ILocationService locationService) :
-        Endpoint<CreateLocationRequest, LocationResponse>
+    public class Delete(IPlaceService placeService) :
+        Endpoint<DeletePlaceRequest, PlaceResponse>
     {
-        private readonly ILocationService _locationService = locationService;
+        private readonly IPlaceService _placeService = placeService;
 
         public override void Configure()
         {
-            Post("/locations");
+            Delete("/places");
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
-        public override async Task HandleAsync(CreateLocationRequest req, CancellationToken ct)
+        public override async Task HandleAsync(DeletePlaceRequest req, CancellationToken ct)
         {
             var userIdClaim = User.FindFirst("userid")?.Value;
 
@@ -30,18 +30,23 @@ namespace TheHunt.Places.Locations.Endpoints
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var newLocation = req with { Id = Guid.NewGuid(), RecordedByUser = userId };
 
-            await _locationService.CreateLocationAsync(newLocation);
+            var placeToDelete = await _placeService.GetPlaceByIdAsync(req.Id);
+            if (placeToDelete is null) return;
+            if (placeToDelete.AddedByUserId != userId)
+            {
+                await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
 
-            var createdLocation = await _locationService.GetLocationByIdAsync(newLocation.Id!.Value, ct);
-            if (createdLocation is null)
+            var success = await _placeService.DeletePlaceAsync(req.Id, ct);
+
+            if (!success)
             {
                 await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
                 return;
             }
-
-            await HttpContext.Response.SendCreatedAtAsync<GetById>(new { createdLocation.Id }, createdLocation.MapToResponse(), cancellation: ct);
+            await HttpContext.Response.SendOkAsync(cancellation: ct);
         }
     }
 }

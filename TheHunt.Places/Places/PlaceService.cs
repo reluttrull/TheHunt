@@ -17,7 +17,7 @@ namespace TheHunt.Places.Places
         {
             _gameContext = gameContext; 
         }
-        public async Task CreatePlaceAsync(CreatePlaceRequest newPlace)
+        public async Task CreatePlaceAsync(CreatePlaceRequest newPlace, CancellationToken token = default)
         {
             var place = new Place
             {
@@ -35,31 +35,63 @@ namespace TheHunt.Places.Places
             await _gameContext.SaveChangesAsync();
         }
 
-        public Task DeletePlaceAsync(Guid id)
+        public async Task<bool> DeletePlaceAsync(Guid id, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var placeToDelete = await _gameContext.Places.FindAsync(id);
+
+            if (placeToDelete is null) return false;
+
+            _gameContext.Places.Remove(placeToDelete);
+            var result = await _gameContext.SaveChangesAsync();
+            return result > 0;
         }
 
-        public async Task<PlaceResponse?> GetPlaceByIdAsync(Guid id)
+        public async Task<Place?> GetPlaceByIdAsync(Guid id, CancellationToken token = default)
         {
             var place = await _gameContext.Places.FindAsync(id);
             if (place is null) return null;
             
-            return place.MapToResponse();
+            return place;
         }
 
-        public Task<List<PlaceResponse>> ListPlacesAsync()
+        public async Task<List<Place>> GetAllPlacesAsync(GetAllPlacesRequest req, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            return await _gameContext.Places
+                .Include(p => p.Location) // todo: add filtering
+                .ToListAsync();
+        }
+        public async Task<List<Place>> GetAllPlacesForUserAsync(Guid id, CancellationToken token = default)
+        {
+            return await _gameContext.Places
+                .Where(p => p.Id == id)
+                .ToListAsync();
+        }
+
+        public async Task<Place?> UpdatePlaceAsync(Guid id, UpdatePlaceRequest req, CancellationToken token = default)
+        {
+            var placeToChange = await _gameContext.Places.FindAsync(id);
+            if (placeToChange is null) return null;
+
+            placeToChange.Name = req.Name;
+            placeToChange.LocationId = req.LocationId;
+            placeToChange.AcceptedRadiusMeters = req.AcceptedRadiusMeters;
+            placeToChange.Hint1 = req.Hint1;
+            placeToChange.Hint2 = req.Hint2;
+            placeToChange.Hint3 = req.Hint3;
+
+            await _gameContext.SaveChangesAsync(token);
+
+            return placeToChange;
         }
     }
 
     public interface IPlaceService
     {
-        Task<List<PlaceResponse>> ListPlacesAsync();
-        Task<PlaceResponse?> GetPlaceByIdAsync(Guid id);
-        Task CreatePlaceAsync(CreatePlaceRequest newPlace);
-        Task DeletePlaceAsync(Guid id);
-        // todo: update
+        Task<List<Place>> GetAllPlacesAsync(GetAllPlacesRequest req, CancellationToken token = default);
+        Task<List<Place>> GetAllPlacesForUserAsync(Guid id, CancellationToken token = default);
+        Task<Place?> GetPlaceByIdAsync(Guid id, CancellationToken token = default);
+        Task CreatePlaceAsync(CreatePlaceRequest newPlace, CancellationToken token = default);
+        Task<Place?> UpdatePlaceAsync(Guid id, UpdatePlaceRequest req, CancellationToken token = default);
+        Task<bool> DeletePlaceAsync(Guid id, CancellationToken token = default);
     }
 }
