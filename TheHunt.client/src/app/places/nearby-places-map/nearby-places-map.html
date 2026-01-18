@@ -1,6 +1,11 @@
 <h2>Nearby places</h2>
-<div class="large-map"
-    leaflet 
-    [leafletOptions]="options">
-    <div [leafletLayer]="layer"></div>
-</div>
+@if (options) {
+    <div class="large-map"
+        leaflet 
+        [leafletOptions]="options">
+        <div [leafletLayer]="layer"></div>
+        @for (marker of markers; track $index) {
+            <div [leafletLayer]="marker"></div>
+        }
+    </div>
+}
