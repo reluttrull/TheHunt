@@ -48,9 +48,11 @@ namespace TheHunt.Places.Places
 
         public async Task<Place?> GetPlaceByIdAsync(Guid id, CancellationToken token = default)
         {
-            var place = await _gameContext.Places.FindAsync(id);
+            var place = await _gameContext.Places
+                .Include(p => p.Location)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (place is null) return null;
-            
+
             return place;
         }
 
@@ -64,6 +66,7 @@ namespace TheHunt.Places.Places
         {
             return await _gameContext.Places
                 .Where(p => p.Id == id)
+                .Include(p => p.Location)
                 .ToListAsync();
         }
 

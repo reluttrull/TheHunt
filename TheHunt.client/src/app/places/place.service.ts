@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { CreatePlaceRequest, PlaceResponse } from './interfaces';
+import { CreatePlaceRequest, GetAllPlacesRequest, PlaceResponse } from './interfaces';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -30,5 +30,16 @@ export class PlaceService {
 
     getAllPlacesForUser() {
         return this.http.get<PlaceResponse[]>(`${this.baseUrl}/places/me`);
+    }
+    
+    getAllPlaces(userId:string|null, minLatitude:number|null, maxLatitude:number|null, minLongitude:number|null, maxLongitude:number|null) {
+        let filters = [];
+        if (userId) filters.push(`userId=${userId}`);
+        if (minLatitude) filters.push(`minLatitude=${minLatitude}`);
+        if (maxLatitude) filters.push(`maxLatitude=${maxLatitude}`);
+        if (minLongitude) filters.push(`minLongitude=${minLongitude}`);
+        if (maxLongitude) filters.push(`maxLongitude=${maxLongitude}`);
+        let queryString = filters.join('&');
+        return this.http.get<PlaceResponse[]>(`${this.baseUrl}/places${queryString.length > 0 ? '?' : ''}${queryString}`);
     }
 }

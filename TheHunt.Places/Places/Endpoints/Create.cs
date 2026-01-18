@@ -5,13 +5,15 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using TheHunt.Common.Constants;
+using TheHunt.Places.Locations;
 
 namespace TheHunt.Places.Places.Endpoints
 {
-    public class Create(IPlaceService placeService) :
+    public class Create(IPlaceService placeService, ILocationService locationService) :
         Endpoint<CreatePlaceRequest, PlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
+        private readonly ILocationService _locationService = locationService;
 
         public override void Configure()
         {
