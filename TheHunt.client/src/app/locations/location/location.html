@@ -1,11 +1,17 @@
-<div class="two-column-flex-container">
-    <div class="small-map"
+<div class="two-item-flex-container">
+    <div class="small-map item"
         leaflet 
         [leafletOptions]="options">
         <div [leafletLayer]="layer"></div>
     </div>
-    <div>
+    <div class="item">
         <div class="padded-rows">
+            <div>
+                <button type="button" (click)="showCreatePlace()">Define this place</button>
+            </div>
+            @if (isCreatePlaceVisible()) {
+                <app-create-place [location]="location()" (onReturn)="hideCreatePlace()"></app-create-place>
+            }
             <div>
                 <span><strong>Latitude: </strong></span><span>{{ location().latitude }}</span>
             </div>

@@ -1,4 +1,25 @@
 .small-map {
     height: 300px;
     width: 300px;
+    margin: 30px 30px;
+}
+
+.two-item-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.item {
+    min-width: 200px; 
+    min-height: 200px; 
+    flex-grow: 1;
+    flex-basis: auto; 
+    margin: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.item * {
+    overflow-wrap:normal;
 }
