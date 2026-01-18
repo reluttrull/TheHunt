@@ -6,9 +6,11 @@
     </div>
     <div class="item">
         <div class="padded-rows">
-            <div>
-                <button type="button" (click)="showCreatePlace()">Define this place</button>
-            </div>
+            @if (definable()) {
+                <div>
+                    <button type="button" (click)="showCreatePlace()">Define this place</button>
+                </div>
+            }
             @if (isCreatePlaceVisible()) {
                 <app-create-place [location]="location()" (onReturn)="hideCreatePlace()"></app-create-place>
             }

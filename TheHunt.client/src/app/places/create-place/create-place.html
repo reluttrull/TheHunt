@@ -1,2 +1,31 @@
-<p>create-place works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()" class="form">
+    <div>
+        <label for="name">Name</label>
+        <input title="name" type="text" formControlName="name" />
+    </div>
+    <div>
+        <label for="acceptedRadiusMeters">Accepted radius (in meters)</label>
+        <input title="acceptedRadiusMeters" type="number" formControlName="acceptedRadiusMeters" />
+    </div>
+    <div>
+        <label for="hint1">Hint 1</label>
+        <input title="hint1" type="text" formControlName="hint1"/>
+    </div>
+    <div>
+        <label for="hint2">Hint 2</label>
+        <input title="hint2" type="text" formControlName="hint2"/>
+    </div>
+    <div>
+        <label for="hint3">Hint 3</label>
+        <input title="hint3" type="text" formControlName="hint3"/>
+    </div>
+    <div>
+        @for (error of validationErrors(); track $index) {
+            <div class="error">{{ error }}</div>
+        }
+    </div>
+    <div>
+        <button type="submit">Create place</button>
+    </div>
+</form>
 <button type="button" (click)="cancel()">Cancel</button>

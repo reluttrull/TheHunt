@@ -14,6 +14,7 @@ import { CreatePlace } from "../../places/create-place/create-place";
 })
 export class Location implements OnInit {
   location = input.required<LocationResponse>();
+  definable = input<boolean>(true);
   locationService = inject(LocationService);
   isCreatePlaceVisible = signal(false);
 

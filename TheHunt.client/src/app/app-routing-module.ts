@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { App } from './app';
 import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
 import { Account } from './auth/account/account';
 import { MyLocations } from './locations/my-locations/my-locations';
+import { Place } from './places/place/place';
 import { authGuard } from './auth/auth.guard';
 
 const routes: Routes = [
@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'account', component: Account, pathMatch: 'full', canActivate: [authGuard] },
   { path: 'mylocations', component: MyLocations, pathMatch: 'full', canActivate: [authGuard]},
+  { path: 'place/:id', component: Place, pathMatch: 'full', canActivate: [authGuard]},
   { path: '', component: Home, pathMatch: 'full', canActivate: [authGuard] }
 ];
 
