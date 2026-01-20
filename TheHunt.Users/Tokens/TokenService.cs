@@ -31,7 +31,9 @@ namespace TheHunt.Users.Tokens
             _gameContext = gameContext;
             _userManager = userManager;
             _config = config;
-            tokenSecret = Environment.GetEnvironmentVariable("TOKEN_SECRET") ?? config.GetValue<string>("TOKEN_SECRET")!;
+            tokenSecret = Environment.GetEnvironmentVariable("TOKEN_SECRET") 
+                ?? config.GetValue<string>("TOKEN_SECRET")
+                ?? throw new InvalidOperationException("Token secret not configured");
         }
 
         public async Task<string> GenerateAccessTokenAsync(User user)
@@ -53,8 +55,12 @@ namespace TheHunt.Users.Tokens
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(tokenLifetime),
-                Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _config.GetValue<string>("JWT_ISSUER"),
-                Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _config.GetValue<string>("JWT_AUDIENCE"),
+                Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") 
+                    ?? _config.GetValue<string>("JWT_ISSUER")
+                    ?? throw new InvalidOperationException("Jwt issuer not configured"),
+                Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") 
+                    ?? _config.GetValue<string>("JWT_AUDIENCE")
+                    ?? throw new InvalidOperationException("Jwt audience not configured"),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             
