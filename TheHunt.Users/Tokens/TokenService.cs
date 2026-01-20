@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +93,32 @@ namespace TheHunt.Users.Tokens
             var result = await _gameContext.SaveChangesAsync();
             return result > 0;
         }
+        
+        public void SetAuthCookies(HttpContext ctx, string accessToken, string refreshToken)
+        {
+            ctx.Response.Cookies.Append("access_token", accessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.Add(tokenLifetime)
+            });
+
+            ctx.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(14)
+            });
+        }
+
+        public void ClearAuthCookies(HttpContext ctx)
+        {
+            ctx.Response.Cookies.Delete("access_token");
+            ctx.Response.Cookies.Delete("refresh_token");
+        }
+
     }
     public interface ITokenService
     {
@@ -99,5 +126,8 @@ namespace TheHunt.Users.Tokens
         Task<RefreshTokenResponse> GenerateRefreshTokenAsync();
         Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires);
         Task<bool> RevokeTokenAsync(RevokeTokenRequest request);
+
+        void SetAuthCookies(HttpContext ctx, string accessToken, string refreshToken);
+        void ClearAuthCookies(HttpContext ctx);
     }
 }

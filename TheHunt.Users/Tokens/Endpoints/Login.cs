@@ -1,4 +1,6 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
@@ -22,23 +24,17 @@ namespace TheHunt.Users.Tokens.Endpoints
         {
             Post("/login");
             AllowAnonymous();
+
+            Throttle(hitLimit: 10, durationSeconds: 300);
         }
 
         public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
         {
             var user = await _userService.GetUserByEmailAsync(req.Email);
-
-            if (user is null)
+            var isValidLogin = user is null ? false : await _userManager.CheckPasswordAsync(user!, req.Password);
+            if (!isValidLogin)
             {
-                AddError(r => r.Email, "Invalid email address.");
-                await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
-                return;
-            }
-
-            var passwordValid = await _userManager.CheckPasswordAsync(user!, req.Password);
-            if (!passwordValid)
-            {
-                AddError(r => r.Password, "Invalid password.");
+                AddError(r => r.Password, "Invalid email or password.");
                 await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
                 return;
             }
@@ -53,7 +49,9 @@ namespace TheHunt.Users.Tokens.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendOkAsync(new TokenResponse(accessToken, refreshToken.RefreshToken), cancellation: ct);
+            _tokenService.SetAuthCookies(HttpContext, accessToken, refreshToken.RefreshToken);
+
+            await HttpContext.Response.SendOkAsync(cancellation: ct);
         }
     }
 }

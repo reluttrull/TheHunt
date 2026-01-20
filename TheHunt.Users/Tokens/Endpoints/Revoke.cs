@@ -21,21 +21,21 @@ namespace TheHunt.Users.Tokens.Endpoints
 
         public override async Task HandleAsync(RevokeTokenRequest req, CancellationToken ct)
         {
-            var user = await _userService.GetUserByRefreshTokenAsync(req.RefreshToken);
-
+            var refreshToken = HttpContext.Request.Cookies["refresh_token"];
+            if (refreshToken is null)
+            {
+                await HttpContext.Response.SendUnauthorizedAsync(ct);
+                return;
+            }
+            var user = await _userService.GetUserByRefreshTokenAsync(refreshToken);
             if (user is null)
             {
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var success = await _tokenService.RevokeTokenAsync(req);
-            if (!success)
-            {
-                await HttpContext.Response.SendNotFoundAsync(cancellation: ct);
-                return;
-            }
-            await HttpContext.Response.SendOkAsync(cancellation: ct);
 
+            _tokenService.ClearAuthCookies(HttpContext);
+            await HttpContext.Response.SendOkAsync(ct);
         }
     }
 }

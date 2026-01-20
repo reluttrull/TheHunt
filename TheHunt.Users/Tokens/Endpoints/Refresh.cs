@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,13 @@ namespace TheHunt.Users.Tokens.Endpoints
 
         public override async Task HandleAsync(RefreshRequest req, CancellationToken ct)
         {
-            var user = await _userService.GetUserByRefreshTokenAsync(req.RefreshToken);
+            var refreshToken = HttpContext.Request.Cookies["refresh_token"];
+            if (refreshToken is null)
+            {
+                await HttpContext.Response.SendUnauthorizedAsync(ct);
+                return;
+            }
+            var user = await _userService.GetUserByRefreshTokenAsync(refreshToken);
 
             if (user is null)
             {
@@ -47,7 +54,8 @@ namespace TheHunt.Users.Tokens.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendOkAsync(new TokenResponse(newAccessToken, newRefreshToken.RefreshToken), cancellation: ct);
+            _tokenService.SetAuthCookies(HttpContext, newAccessToken, newRefreshToken.RefreshToken);
+            await HttpContext.Response.SendOkAsync(ct);
         }
     }
 }

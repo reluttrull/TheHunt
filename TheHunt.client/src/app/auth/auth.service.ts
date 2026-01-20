@@ -1,25 +1,22 @@
 import { inject, Injectable, effect, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
+import { tap, map, catchError, of } from 'rxjs';
 import { RegisterRequest, LoginRequest, TokenResponse, UserResponse } from './interfaces';
 import { environment } from '../../environments/environment';
-
-const ACCESS_TOKEN_KEY = 'jwt';
-const REFRESH_TOKEN_KEY = 'refresh_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     http = inject(HttpClient);
     router = inject(Router);
     private baseUrl = environment.api;
-    public hasTokenSignal = signal<boolean>(this.hasToken());
+    public isAuthenticated = signal<boolean>(false);
     private readonly _user = signal<UserResponse | null>(null);
     readonly user = this._user.asReadonly();
 
     constructor() {
         effect(() => {
-            if (this.hasTokenSignal()) {
+            if (this.check()) {
                 this.loadUser();
             } else {
                 this._user.set(null);
@@ -32,9 +29,11 @@ export class AuthService {
     }
 
     login(formData:LoginRequest) {
-        return this.http
-            .post<TokenResponse>(`${this.baseUrl}/login`, formData)
-            .pipe(tap(res => this.setTokens(res.accessToken, res.refreshToken)));
+        return this.http.post(`${this.baseUrl}/login`, formData,)
+            .pipe(tap(() => {
+                this.isAuthenticated.set(true);
+                this.loadUser();
+        }));
     }
 
     getUserInfo() {
@@ -42,41 +41,24 @@ export class AuthService {
     }
     
     refreshToken() {
-        const refreshToken = this.getRefreshToken();
-        return this.http
-            .post<TokenResponse>(`${this.baseUrl}/refresh`, { refreshToken: refreshToken })
-            .pipe(tap(res => this.setTokens(res.accessToken, res.refreshToken)));
+        return this.http.post(`${this.baseUrl}/refresh`, {});
     }
     
     logout() {
-        this.clear();
+        this.http.post(`${this.baseUrl}/revoke`, {},).subscribe();
+        this.isAuthenticated.set(false);
         this.router.navigate(['login']);
     }
 
-    setTokens(accessToken: string, refreshToken: string): void {
-        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-        localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-        this.hasTokenSignal.set(true);
-        this.loadUser();
+    check() {
+        return this.http.get(`${this.baseUrl}/users/me`,).pipe(
+            map(() => true),
+            catchError(() => of(false))
+        );
     }
-    
-    clear(): void {
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
-        this.hasTokenSignal.set(false);
-        this._user.set(null);
-    }
-    
-    getAccessToken(): string | null {
-        return localStorage.getItem(ACCESS_TOKEN_KEY);
-    }
-    
-    getRefreshToken(): string | null {
-        return localStorage.getItem(REFRESH_TOKEN_KEY);
-    }
-    
+
     hasToken(): boolean {
-        return this.getAccessToken() != null;
+        return this.user != null;
     }
     
     private loadUser() {
