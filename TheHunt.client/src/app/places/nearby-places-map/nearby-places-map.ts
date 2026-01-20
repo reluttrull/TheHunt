@@ -14,6 +14,7 @@ import { LatLong, getLocation } from '../../locations/utils';
 export class NearbyPlacesMap implements OnInit {
   placeService = inject(PlaceService);
   places = signal<PlaceResponse[]>([]);
+  isMapReady = signal(false);
   latitude: number | undefined;
   longitude: number | undefined;
 
@@ -30,24 +31,17 @@ export class NearbyPlacesMap implements OnInit {
       .subscribe({
         next: res => {
           this.places.set(res);
-          this.places().forEach(p => {
-            console.log('place latlong', p.latitude, p.longitude);
-            this.markers.push(L.marker([p.latitude, p.longitude]
-            //   , {
-            //   icon: L.icon({
-            //     ...L.Icon.Default.prototype.options,
-            //     iconUrl: 'assets/marker-icon.png',
-            //     iconRetinaUrl: 'assets/marker-icon-2x.png',
-            //     shadowUrl: 'assets/marker-shadow.png'
-            //   })
-            // }
-            ));
-          });
-          this.markers = [...this.markers];
+          this.markers = this.places().map(p => L.marker([p.latitude, p.longitude]));
+          this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
+          console.log(this.options, this.layer, this.markers);
+          this.isMapReady.set(true);
         },
         error: err => console.error('could not retrieve nearby places for user', err)
       });
+  }
 
+  initializeMap(lat:number, long:number) {
+    this.layer = L.circle([lat, long], { radius: 50});
     this.options = {
       layers: [
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,8 +50,7 @@ export class NearbyPlacesMap implements OnInit {
         })
       ],
       zoom: 15,
-      center: L.latLng(this.latitude, this.longitude)
+      center: L.latLng(lat, long)
     };
-    this.layer = L.circle([this.latitude, this.longitude], { radius: 50});
   }
 }
