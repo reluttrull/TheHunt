@@ -8,7 +8,7 @@ using TheHunt.Users.Users;
 namespace TheHunt.Users.Tokens.Endpoints
 {
     public class Revoke(ITokenService tokenService, IUserService userService) : 
-        Endpoint<RevokeTokenRequest>
+        EndpointWithoutRequest
     {
         private readonly ITokenService _tokenService = tokenService;
         private readonly IUserService _userService = userService;
@@ -19,7 +19,7 @@ namespace TheHunt.Users.Tokens.Endpoints
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(RevokeTokenRequest req, CancellationToken ct)
+        public override async Task HandleAsync(CancellationToken ct)
         {
             var refreshToken = HttpContext.Request.Cookies["refresh_token"];
             if (refreshToken is null)

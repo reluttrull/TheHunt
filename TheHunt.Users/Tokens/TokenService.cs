@@ -31,7 +31,9 @@ namespace TheHunt.Users.Tokens
             _gameContext = gameContext;
             _userManager = userManager;
             _config = config;
-            tokenSecret = Environment.GetEnvironmentVariable("TOKEN_SECRET") ?? config.GetValue<string>("TOKEN_SECRET")!;
+            tokenSecret = Environment.GetEnvironmentVariable("TOKEN_SECRET") 
+                ?? config.GetValue<string>("TOKEN_SECRET")
+                ?? throw new InvalidOperationException("Token secret not configured");
         }
 
         public async Task<string> GenerateAccessTokenAsync(User user)
@@ -53,8 +55,12 @@ namespace TheHunt.Users.Tokens
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(tokenLifetime),
-                Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _config.GetValue<string>("JWT_ISSUER"),
-                Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _config.GetValue<string>("JWT_AUDIENCE"),
+                Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") 
+                    ?? _config.GetValue<string>("JWT_ISSUER")
+                    ?? throw new InvalidOperationException("Jwt issuer not configured"),
+                Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") 
+                    ?? _config.GetValue<string>("JWT_AUDIENCE")
+                    ?? throw new InvalidOperationException("Jwt audience not configured"),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             
@@ -69,19 +75,6 @@ namespace TheHunt.Users.Tokens
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return new RefreshTokenResponse(Convert.ToBase64String(randomNumber), DateTime.UtcNow.AddDays(14));
-        }
-
-        public async Task<bool> RevokeTokenAsync(RevokeTokenRequest request)
-        {
-            var user = await _gameContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
-            if (user is null) return false;
-
-            user.RefreshToken = string.Empty;
-            user.RefreshTokenExpiry = new DateTime();
-            await _gameContext.SaveChangesAsync();
-
-            var result = await _userManager.RemoveAuthenticationTokenAsync(user, "Default", "RefreshToken");
-            return result.Succeeded;
         }
 
         public async Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires)
@@ -125,7 +118,6 @@ namespace TheHunt.Users.Tokens
         Task<string> GenerateAccessTokenAsync(User user);
         Task<RefreshTokenResponse> GenerateRefreshTokenAsync();
         Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires);
-        Task<bool> RevokeTokenAsync(RevokeTokenRequest request);
 
         void SetAuthCookies(HttpContext ctx, string accessToken, string refreshToken);
         void ClearAuthCookies(HttpContext ctx);

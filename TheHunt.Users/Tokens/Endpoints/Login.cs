@@ -34,7 +34,7 @@ namespace TheHunt.Users.Tokens.Endpoints
             var isValidLogin = user is null ? false : await _userManager.CheckPasswordAsync(user!, req.Password);
             if (!isValidLogin)
             {
-                AddError(r => r.Password, "Invalid email or password.");
+                AddError("Invalid email or password.");
                 await HttpContext.Response.SendErrorsAsync(ValidationFailures, cancellation: ct);
                 return;
             }
