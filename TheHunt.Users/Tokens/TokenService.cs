@@ -77,19 +77,6 @@ namespace TheHunt.Users.Tokens
             return new RefreshTokenResponse(Convert.ToBase64String(randomNumber), DateTime.UtcNow.AddDays(14));
         }
 
-        public async Task<bool> RevokeTokenAsync(RevokeTokenRequest request)
-        {
-            var user = await _gameContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
-            if (user is null) return false;
-
-            user.RefreshToken = string.Empty;
-            user.RefreshTokenExpiry = new DateTime();
-            await _gameContext.SaveChangesAsync();
-
-            var result = await _userManager.RemoveAuthenticationTokenAsync(user, "Default", "RefreshToken");
-            return result.Succeeded;
-        }
-
         public async Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires)
         {
             var user = await _gameContext.Users.FindAsync(userId);
@@ -131,7 +118,6 @@ namespace TheHunt.Users.Tokens
         Task<string> GenerateAccessTokenAsync(User user);
         Task<RefreshTokenResponse> GenerateRefreshTokenAsync();
         Task<bool> UpdateRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires);
-        Task<bool> RevokeTokenAsync(RevokeTokenRequest request);
 
         void SetAuthCookies(HttpContext ctx, string accessToken, string refreshToken);
         void ClearAuthCookies(HttpContext ctx);

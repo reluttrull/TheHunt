@@ -22,6 +22,7 @@ namespace TheHunt.Tests.Users
             Environment.SetEnvironmentVariable("JWT_ISSUER", "test-issuer");
             Environment.SetEnvironmentVariable("JWT_AUDIENCE", "test-audience");
         }
+
         [Fact]
         public async Task Login_WhenValidLogin_LoginSuccessful()
         {
