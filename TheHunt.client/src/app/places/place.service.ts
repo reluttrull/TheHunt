@@ -32,8 +32,12 @@ export class PlaceService {
         return this.http.get<PlaceResponse[]>(`${this.baseUrl}/places/me`);
     }
     
-    getAllPlaces(userId:string|null, minLatitude:number|null, maxLatitude:number|null, minLongitude:number|null, maxLongitude:number|null) {
+    getAllPlaces(reqLatitude:number, reqLongitude:number, userId:string|null = null, 
+            minLatitude:number|null = null, maxLatitude:number|null = null, 
+            minLongitude:number|null = null, maxLongitude:number|null = null) {
         let filters = [];
+        filters.push(`requestLatitude=${reqLatitude}`);
+        filters.push(`requestLongitude=${reqLongitude}`);
         if (userId) filters.push(`userId=${userId}`);
         if (minLatitude) filters.push(`minLatitude=${minLatitude}`);
         if (maxLatitude) filters.push(`maxLatitude=${maxLatitude}`);

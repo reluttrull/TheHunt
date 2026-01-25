@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TheHunt.Common.Data;
+using TheHunt.Common.Extensions;
 using TheHunt.Common.Model;
 using TheHunt.Places.Places.Endpoints;
 
@@ -59,8 +60,16 @@ namespace TheHunt.Places.Places
         public async Task<List<Place>> GetAllPlacesAsync(GetAllPlacesRequest req, CancellationToken token = default)
         {
             return await _gameContext.Places
-                .Include(p => p.Location) // todo: add filtering
-                .ToListAsync();
+                .Include(p => p.Location)
+                .WhereIf(req.UserId is not null, p => p.AddedByUserId == req.UserId)
+                .WhereIf(req.MinLatitude is not null, p => p.Location != null && p.Location!.Latitude >= req.MinLatitude)
+                .WhereIf(req.MaxLatitude is not null, p => p.Location != null && p.Location!.Latitude <= req.MaxLatitude)
+                .WhereIf(req.MinLongitude is not null, p => p.Location != null && p.Location!.Longitude >= req.MinLongitude)
+                .WhereIf(req.MaxLongitude is not null, p => p.Location != null && p.Location!.Longitude <= req.MaxLongitude)
+                .OrderBy(p => p.Location == null 
+                    ? decimal.MaxValue 
+                    : Math.Abs(req.RequestLatitude - p.Location.Latitude) + Math.Abs(req.RequestLongitude - p.Location.Longitude))
+                .ToListAsync(token);
         }
         public async Task<List<Place>> GetAllPlacesForUserAsync(Guid id, CancellationToken token = default)
         {

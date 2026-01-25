@@ -27,7 +27,7 @@ export class NearbyPlacesMap implements OnInit {
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
     console.log('user latlong', this.latitude, this.longitude);
-    this.placeService.getAllPlaces(null, null, null, null, null)
+    this.placeService.getAllPlaces(this.latitude, this.longitude)
       .subscribe({
         next: res => {
           this.places.set(res);
