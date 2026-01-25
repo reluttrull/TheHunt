@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { LeafletDirective, LeafletLayerDirective } from '@bluehalo/ngx-leaflet';
+import { LeafletDirective, LeafletLayersDirective } from '@bluehalo/ngx-leaflet';
 import * as L from 'leaflet';
 import { PlaceService } from '../place.service';
 import { PlaceResponse } from '../interfaces';
@@ -8,7 +8,7 @@ import { LatLong, getLocation } from '../../locations/utils';
 
 @Component({
   selector: 'app-nearby-places-map',
-  imports: [ReactiveFormsModule, LeafletDirective, LeafletLayerDirective],
+  imports: [ReactiveFormsModule, LeafletDirective, LeafletLayersDirective],
   templateUrl: './nearby-places-map.html',
   styleUrl: './nearby-places-map.css',
 })
@@ -29,6 +29,7 @@ export class NearbyPlacesMap implements OnInit {
   longitude: number | undefined;
 
   options: L.MapOptions | undefined;
+  layers: L.Layer[] = [];
   layer = L.circle([0,0], { radius: 0});
   markers: L.Layer[] = [];
 
@@ -40,14 +41,26 @@ export class NearbyPlacesMap implements OnInit {
     let latLong:LatLong = await getLocation();
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
-    this.placeService.getAllPlaces(this.latitude, this.longitude,
-          null, this.filters.value.minLatitude, null, null)
+    this.placeService.getAllPlaces(this.latitude, this.longitude, null, 
+          this.filters.value.minLatitude, this.filters.value.maxLatitude, 
+          this.filters.value.minLongitude, this.filters.value.maxLongitude)
       .subscribe({
         next: res => {
+          this.isMapReady.set(false);
           this.places.set(res);
-          this.markers = this.places().map(p => L.marker([p.latitude, p.longitude]));
-          this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
-          console.log(this.options, this.layer, this.markers);
+
+          const markers = this.places().map(p =>
+            L.marker([p.latitude, p.longitude])
+          );
+
+          this.layer = L.circle([this.latitude!, this.longitude!], { radius: 50 });
+
+          this.layers = [ this.layer, ...markers ];
+
+          if (!this.options) {
+            this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
+          }
+
           this.isMapReady.set(true);
         },
         error: err => console.error('could not retrieve nearby places for user', err)
@@ -69,6 +82,7 @@ export class NearbyPlacesMap implements OnInit {
   }
   
   applyFilters() {
+    this.areFiltersVisible.set(false);
     this.getAndLoadResults();
   }
   

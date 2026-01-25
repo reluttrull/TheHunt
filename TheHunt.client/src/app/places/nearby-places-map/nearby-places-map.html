@@ -9,6 +9,14 @@
         <label for="maxLatitude">Maximum latitude</label>
         <input title="maxLatitude" formControlName="maxLatitude" type="number">
     </div>
+    <div>
+        <label for="minLongitude">Minimum longitude</label>
+        <input title="minLongitude" formControlName="minLongitude" type="number">
+    </div>
+    <div>
+        <label for="maxLongitude">Maximum longitude</label>
+        <input title="maxLongitude" formControlName="maxLongitude" type="number">
+    </div>
     <button matButton="filled" type="submit">
         Apply filters
     </button>
@@ -21,11 +29,8 @@
 }
 @if (isMapReady()) {
     <div class="large-map"
-        leaflet 
-        [leafletOptions]="options!">
-        <div [leafletLayer]="layer"></div>
-        @for (marker of markers; track $index) {
-            <div [leafletLayer]="marker"></div>
-        }
-    </div>
+     leaflet
+     [leafletOptions]="options!"
+     [leafletLayers]="layers">
+</div>
 }
