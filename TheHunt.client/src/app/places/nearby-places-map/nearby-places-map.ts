@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { LeafletDirective, LeafletLayerDirective } from '@bluehalo/ngx-leaflet';
 import * as L from 'leaflet';
 import { PlaceService } from '../place.service';
@@ -7,11 +8,20 @@ import { LatLong, getLocation } from '../../locations/utils';
 
 @Component({
   selector: 'app-nearby-places-map',
-  imports: [LeafletDirective, LeafletLayerDirective],
+  imports: [ReactiveFormsModule, LeafletDirective, LeafletLayerDirective],
   templateUrl: './nearby-places-map.html',
   styleUrl: './nearby-places-map.css',
 })
 export class NearbyPlacesMap implements OnInit {
+  fb = inject(FormBuilder);
+  filters:FormGroup = this.fb.group({
+      minLatitude: [null],
+      maxLatitude: [null],
+      minLongitude: [null],
+      maxLongitude: [null]
+  });
+  areFiltersVisible = signal(false);
+
   placeService = inject(PlaceService);
   places = signal<PlaceResponse[]>([]);
   isMapReady = signal(false);
@@ -23,11 +33,15 @@ export class NearbyPlacesMap implements OnInit {
   markers: L.Layer[] = [];
 
   async ngOnInit() {
+    await this.getAndLoadResults();
+  }
+
+  async getAndLoadResults() {
     let latLong:LatLong = await getLocation();
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
-    console.log('user latlong', this.latitude, this.longitude);
-    this.placeService.getAllPlaces(this.latitude, this.longitude)
+    this.placeService.getAllPlaces(this.latitude, this.longitude,
+          null, this.filters.value.minLatitude, null, null)
       .subscribe({
         next: res => {
           this.places.set(res);
@@ -52,5 +66,23 @@ export class NearbyPlacesMap implements OnInit {
       zoom: 15,
       center: L.latLng(lat, long)
     };
+  }
+  
+  applyFilters() {
+    this.getAndLoadResults();
+  }
+  
+  clearFilters() {
+    this.filters = this.fb.group({
+      minLatitude: [null],
+      maxLatitude: [null],
+      minLongitude: [null],
+      maxLongitude: [null]
+    });
+    this.applyFilters();
+  }
+  
+  toggleFiltersVisible() {
+    this.areFiltersVisible.set(true);
   }
 }
