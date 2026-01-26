@@ -15,12 +15,14 @@ import { LatLong, getLocation } from '../../locations/utils';
 export class NearbyPlacesMap implements OnInit {
   fb = inject(FormBuilder);
   filters:FormGroup = this.fb.group({
-      maxDistanceMeters: [null]
+      maxDistanceKm: [null]
   });
   areFiltersVisible = signal(false);
 
   placeService = inject(PlaceService);
   places = signal<PlaceResponse[]>([]);
+
+  fitBounds!: L.LatLngBounds;
   isMapReady = signal(false);
   latitude: number | undefined;
   longitude: number | undefined;
@@ -38,7 +40,7 @@ export class NearbyPlacesMap implements OnInit {
     let latLong:LatLong = await getLocation();
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
-    let d = this.filters.value.maxDistanceMeters ?? 5;
+    let d = this.filters.value.maxDistanceKm ?? 5;
     let minLat = this.latitude - (d / 111.1);
     let maxLat = this.latitude + (d / 111.1);
     let minLon = this.longitude - (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
@@ -54,11 +56,9 @@ export class NearbyPlacesMap implements OnInit {
             L.marker([p.latitude, p.longitude])
           );
 
-          var bounds = new L.LatLngBounds([
-            new L.LatLng(minLat, minLon),
-            new L.LatLng(minLat, maxLon),
-            new L.LatLng(maxLat, minLon),
-            new L.LatLng(maxLat, maxLon)
+          this.fitBounds = L.latLngBounds([
+            [minLat, minLon],
+            [maxLat, maxLon]
           ]);
 
           this.layer = L.circle([this.latitude!, this.longitude!], { radius: 50 });
@@ -66,7 +66,7 @@ export class NearbyPlacesMap implements OnInit {
           this.layers = [ this.layer, ...markers ];
 
           if (!this.options) {
-            this.initializeMap(this.latitude ?? 0, this.longitude ?? 0, bounds);
+            this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
           }
 
           this.isMapReady.set(true);
@@ -75,7 +75,7 @@ export class NearbyPlacesMap implements OnInit {
       });
   }
 
-  initializeMap(lat:number, long:number, bounds:L.LatLngBounds) {
+  initializeMap(lat:number, long:number) {
     this.layer = L.circle([lat, long], { radius: 50});
     this.options = {
       layers: [
@@ -84,7 +84,7 @@ export class NearbyPlacesMap implements OnInit {
           attribution: '...'
         })
       ],
-      maxBounds: bounds,
+      zoom: 13,
       center: L.latLng(lat, long)
     };
   }
@@ -97,7 +97,7 @@ export class NearbyPlacesMap implements OnInit {
   
   clearFilters() {
     this.filters = this.fb.group({
-      maxDistanceMeters: [null]
+      maxDistanceKm: [null]
     });
     this.applyFilters();
   }

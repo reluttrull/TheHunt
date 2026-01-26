@@ -2,8 +2,8 @@
 @if (areFiltersVisible()) {
 <form [formGroup]="filters" (ngSubmit)="applyFilters()">
     <div>
-        <label for="maxDistanceMeters">Max distance</label>
-        <select title="maxDistanceMeters" formControlName="maxDistanceMeters">
+        <label for="maxDistanceKm">Max distance</label>
+        <select title="maxDistanceKm" formControlName="maxDistanceKm">
             <option value="1">1 km</option>
             <option value="5">5 km</option>
             <option value="10">10 km</option>
@@ -23,6 +23,7 @@
     <div class="large-map"
      leaflet
      [leafletOptions]="options!"
-     [leafletLayers]="layers">
+     [leafletLayers]="layers"
+     [leafletFitBounds]="fitBounds">
 </div>
 }
