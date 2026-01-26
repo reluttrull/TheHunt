@@ -2,20 +2,12 @@
 @if (areFiltersVisible()) {
 <form [formGroup]="filters" (ngSubmit)="applyFilters()">
     <div>
-        <label for="minLatitude">Minimum latitude</label>
-        <input title="minLatitude" formControlName="minLatitude" type="number">
-    </div>
-    <div>
-        <label for="maxLatitude">Maximum latitude</label>
-        <input title="maxLatitude" formControlName="maxLatitude" type="number">
-    </div>
-    <div>
-        <label for="minLongitude">Minimum longitude</label>
-        <input title="minLongitude" formControlName="minLongitude" type="number">
-    </div>
-    <div>
-        <label for="maxLongitude">Maximum longitude</label>
-        <input title="maxLongitude" formControlName="maxLongitude" type="number">
+        <label for="maxDistanceMeters">Max distance</label>
+        <select title="maxDistanceMeters" formControlName="maxDistanceMeters">
+            <option value="1">1 km</option>
+            <option value="5">5 km</option>
+            <option value="10">10 km</option>
+        </select>
     </div>
     <button matButton="filled" type="submit">
         Apply filters

@@ -15,10 +15,7 @@ import { LatLong, getLocation } from '../../locations/utils';
 export class NearbyPlacesMap implements OnInit {
   fb = inject(FormBuilder);
   filters:FormGroup = this.fb.group({
-      minLatitude: [null],
-      maxLatitude: [null],
-      minLongitude: [null],
-      maxLongitude: [null]
+      maxDistanceMeters: [null]
   });
   areFiltersVisible = signal(false);
 
@@ -41,9 +38,13 @@ export class NearbyPlacesMap implements OnInit {
     let latLong:LatLong = await getLocation();
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
+    let d = this.filters.value.maxDistanceMeters ?? 5;
+    let minLat = this.latitude - (d / 111.1);
+    let maxLat = this.latitude + (d / 111.1);
+    let minLon = this.longitude - (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
+    let maxLon = this.longitude + (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
     this.placeService.getAllPlaces(this.latitude, this.longitude, null, 
-          this.filters.value.minLatitude, this.filters.value.maxLatitude, 
-          this.filters.value.minLongitude, this.filters.value.maxLongitude)
+          minLat, maxLat, minLon, maxLon)
       .subscribe({
         next: res => {
           this.isMapReady.set(false);
@@ -53,12 +54,19 @@ export class NearbyPlacesMap implements OnInit {
             L.marker([p.latitude, p.longitude])
           );
 
+          var bounds = new L.LatLngBounds([
+            new L.LatLng(minLat, minLon),
+            new L.LatLng(minLat, maxLon),
+            new L.LatLng(maxLat, minLon),
+            new L.LatLng(maxLat, maxLon)
+          ]);
+
           this.layer = L.circle([this.latitude!, this.longitude!], { radius: 50 });
 
           this.layers = [ this.layer, ...markers ];
 
           if (!this.options) {
-            this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
+            this.initializeMap(this.latitude ?? 0, this.longitude ?? 0, bounds);
           }
 
           this.isMapReady.set(true);
@@ -67,7 +75,7 @@ export class NearbyPlacesMap implements OnInit {
       });
   }
 
-  initializeMap(lat:number, long:number) {
+  initializeMap(lat:number, long:number, bounds:L.LatLngBounds) {
     this.layer = L.circle([lat, long], { radius: 50});
     this.options = {
       layers: [
@@ -76,22 +84,20 @@ export class NearbyPlacesMap implements OnInit {
           attribution: '...'
         })
       ],
-      zoom: 15,
+      maxBounds: bounds,
       center: L.latLng(lat, long)
     };
   }
   
   applyFilters() {
     this.areFiltersVisible.set(false);
+    //this.options = undefined;
     this.getAndLoadResults();
   }
   
   clearFilters() {
     this.filters = this.fb.group({
-      minLatitude: [null],
-      maxLatitude: [null],
-      minLongitude: [null],
-      maxLongitude: [null]
+      maxDistanceMeters: [null]
     });
     this.applyFilters();
   }
