@@ -1,0 +1,29 @@
+<h2>My places</h2>
+@if (areFiltersVisible()) {
+<form [formGroup]="filters" (ngSubmit)="applyFilters()">
+    <div>
+        <label for="maxDistanceKm">Max distance</label>
+        <select title="maxDistanceKm" formControlName="maxDistanceKm">
+            <option value="1">1 km</option>
+            <option value="5">5 km</option>
+            <option value="10">10 km</option>
+        </select>
+    </div>
+    <button matButton="filled" type="submit">
+        Apply filters
+    </button>
+</form>
+} @else {
+    <button matButton="filled" type="button" (click)="toggleFiltersVisible()">Filter results</button>
+}
+@if (filters.dirty) {
+    <button matButton="tonal" type="button" (click)="clearFilters()">Clear filters</button>
+}
+@if (isMapReady()) {
+    <div class="large-map"
+     leaflet
+     [leafletOptions]="options!"
+     [leafletLayers]="layers"
+     [leafletFitBounds]="fitBounds">
+</div>
+}

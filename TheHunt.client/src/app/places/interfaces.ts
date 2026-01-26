@@ -17,6 +17,14 @@ export interface GetAllPlacesRequest {
     maxLongitude?: number | null;
 }
 
+export interface UnknownPlaceResponse {
+    id: string;
+    name: string;
+    acceptedRadiusMeters: number;
+    addedByUserId: string;
+    addedDate: Date;
+}
+
 export interface PlaceResponse {
     id: string;
     name: string;

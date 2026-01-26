@@ -10,7 +10,7 @@ using TheHunt.Places.Places.Endpoints;
 namespace TheHunt.Places.PLaces.Endpoints
 {
     public class GetAllForUser(IPlaceService placeService) :
-        EndpointWithoutRequest<IEnumerable<PlaceResponse>>
+        Endpoint<GetAllPlacesForUserRequest, IEnumerable<PlaceResponse>>
     {
         private readonly IPlaceService _placeService = placeService;
 
@@ -20,7 +20,7 @@ namespace TheHunt.Places.PLaces.Endpoints
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(GetAllPlacesForUserRequest req, CancellationToken ct)
         {
             var userIdClaim = User.FindFirst("userid")?.Value;
 
@@ -29,7 +29,7 @@ namespace TheHunt.Places.PLaces.Endpoints
                 await HttpContext.Response.SendUnauthorizedAsync(cancellation: ct);
                 return;
             }
-            var places = await _placeService.GetAllPlacesForUserAsync(userId, ct);
+            var places = await _placeService.GetAllPlacesForUserAsync(req, userId, ct);
 
             await HttpContext.Response.SendAsync(places.Select(p => p.MapToResponse()), cancellation: ct);
         }

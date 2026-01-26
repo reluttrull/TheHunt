@@ -6,6 +6,7 @@ using TheHunt.Common.Data;
 using TheHunt.Common.Extensions;
 using TheHunt.Common.Model;
 using TheHunt.Places.Places.Endpoints;
+using static FastEndpoints.Ep;
 
 namespace TheHunt.Places.Places
 {
@@ -71,12 +72,19 @@ namespace TheHunt.Places.Places
                     : Math.Abs(req.RequestLatitude - p.Location.Latitude) + Math.Abs(req.RequestLongitude - p.Location.Longitude))
                 .ToListAsync(token);
         }
-        public async Task<List<Place>> GetAllPlacesForUserAsync(Guid id, CancellationToken token = default)
+        public async Task<List<Place>> GetAllPlacesForUserAsync(GetAllPlacesForUserRequest req, Guid id, CancellationToken token = default)
         {
             return await _gameContext.Places
-                .Where(p => p.Id == id)
+                .Where(p => p.AddedByUserId == id)
                 .Include(p => p.Location)
-                .ToListAsync();
+                .WhereIf(req.MinLatitude is not null, p => p.Location != null && p.Location!.Latitude >= req.MinLatitude)
+                .WhereIf(req.MaxLatitude is not null, p => p.Location != null && p.Location!.Latitude <= req.MaxLatitude)
+                .WhereIf(req.MinLongitude is not null, p => p.Location != null && p.Location!.Longitude >= req.MinLongitude)
+                .WhereIf(req.MaxLongitude is not null, p => p.Location != null && p.Location!.Longitude <= req.MaxLongitude)
+                .OrderBy(p => p.Location == null
+                    ? decimal.MaxValue
+                    : Math.Abs(req.RequestLatitude - p.Location.Latitude) + Math.Abs(req.RequestLongitude - p.Location.Longitude))
+                .ToListAsync(token);
         }
 
         public async Task<Place?> UpdatePlaceAsync(Guid id, UpdatePlaceRequest req, CancellationToken token = default)
@@ -100,7 +108,7 @@ namespace TheHunt.Places.Places
     public interface IPlaceService
     {
         Task<List<Place>> GetAllPlacesAsync(GetAllPlacesRequest req, CancellationToken token = default);
-        Task<List<Place>> GetAllPlacesForUserAsync(Guid id, CancellationToken token = default);
+        Task<List<Place>> GetAllPlacesForUserAsync(GetAllPlacesForUserRequest req, Guid id, CancellationToken token = default);
         Task<Place?> GetPlaceByIdAsync(Guid id, CancellationToken token = default);
         Task CreatePlaceAsync(CreatePlaceRequest newPlace, CancellationToken token = default);
         Task<Place?> UpdatePlaceAsync(Guid id, UpdatePlaceRequest req, CancellationToken token = default);

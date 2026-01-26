@@ -3,16 +3,16 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { LeafletDirective, LeafletLayersDirective } from '@bluehalo/ngx-leaflet';
 import * as L from 'leaflet';
 import { PlaceService } from '../place.service';
-import { UnknownPlaceResponse } from '../interfaces';
+import { PlaceResponse } from '../interfaces';
 import { LatLong, getLocation } from '../../locations/utils';
 
 @Component({
-  selector: 'app-nearby-places-map',
+  selector: 'app-my-places-map',
   imports: [ReactiveFormsModule, LeafletDirective, LeafletLayersDirective],
-  templateUrl: './nearby-places-map.html',
-  styleUrl: './nearby-places-map.css',
+  templateUrl: './my-places-map.html',
+  styleUrl: './my-places-map.css',
 })
-export class NearbyPlacesMap implements OnInit {
+export class MyPlacesMap implements OnInit {
   fb = inject(FormBuilder);
   filters:FormGroup = this.fb.group({
       maxDistanceKm: [null]
@@ -20,7 +20,7 @@ export class NearbyPlacesMap implements OnInit {
   areFiltersVisible = signal(false);
 
   placeService = inject(PlaceService);
-  places = signal<UnknownPlaceResponse[]>([]);
+  places = signal<PlaceResponse[]>([]);
 
   fitBounds!: L.LatLngBounds;
   isMapReady = signal(false);
@@ -30,6 +30,7 @@ export class NearbyPlacesMap implements OnInit {
   options: L.MapOptions | undefined;
   layers: L.Layer[] = [];
   layer = L.circle([0,0], { radius: 0});
+  markers: L.Layer[] = [];
 
   async ngOnInit() {
     await this.getAndLoadResults();
@@ -44,24 +45,17 @@ export class NearbyPlacesMap implements OnInit {
     let maxLat = this.latitude + (d / 111.1);
     let minLon = this.longitude - (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
     let maxLon = this.longitude + (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
-    this.placeService.getAllPlaces(this.latitude, this.longitude, null, 
+    this.placeService.getAllPlacesForUser(this.latitude, this.longitude, 
           minLat, maxLat, minLon, maxLon)
       .subscribe({
         next: res => {
           this.isMapReady.set(false);
           this.places.set(res);
 
-          var numberedIcon = L.divIcon({
-            className: 'number-results-icon',
-            html: `<span>${res.length}</span>`,
-            iconSize: [30, 30],
-            iconAnchor: [15, 15] 
-          });
-
-          const markers:L.Marker[] = [
-            new L.Marker([this.latitude!, this.longitude!], 
-            {icon: numberedIcon})
-          ];
+          const markers = this.places().map(p =>
+            L.marker([p.latitude, p.longitude])
+          );
+          console.log(`${markers.length} markers`, markers);
 
           this.fitBounds = L.latLngBounds([
             [minLat, minLon],
@@ -98,7 +92,6 @@ export class NearbyPlacesMap implements OnInit {
   
   applyFilters() {
     this.areFiltersVisible.set(false);
-    //this.options = undefined;
     this.getAndLoadResults();
   }
   

@@ -8,7 +8,7 @@ using TheHunt.Common.Constants;
 namespace TheHunt.Places.Places.Endpoints
 {
     public class GetAll(IPlaceService placeService) :
-        Endpoint<GetAllPlacesRequest, IEnumerable<PlaceResponse>>
+        Endpoint<GetAllPlacesRequest, IEnumerable<UnknownPlaceResponse>>
     {
         private readonly IPlaceService _placeService = placeService;
 
@@ -22,7 +22,7 @@ namespace TheHunt.Places.Places.Endpoints
         {
             var places = await _placeService.GetAllPlacesAsync(req);
 
-            await HttpContext.Response.SendAsync(places.Select(p => p.MapToResponse()), cancellation: ct);
+            await HttpContext.Response.SendAsync(places.Select(p => p.MapToUnknownResponse()), cancellation: ct);
         }
     }
 }

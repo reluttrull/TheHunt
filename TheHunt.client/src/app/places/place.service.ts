@@ -27,9 +27,19 @@ export class PlaceService {
     getPlace(id:string) {
         return this.http.get<PlaceResponse>(`${this.baseUrl}/places/${id}`);
     }
-
-    getAllPlacesForUser() {
-        return this.http.get<PlaceResponse[]>(`${this.baseUrl}/places/me`);
+    
+    getAllPlacesForUser(reqLatitude:number, reqLongitude:number,
+            minLatitude:number|null = null, maxLatitude:number|null = null, 
+            minLongitude:number|null = null, maxLongitude:number|null = null) {
+        let filters = [];
+        filters.push(`requestLatitude=${reqLatitude}`);
+        filters.push(`requestLongitude=${reqLongitude}`);
+        if (minLatitude) filters.push(`minLatitude=${minLatitude}`);
+        if (maxLatitude) filters.push(`maxLatitude=${maxLatitude}`);
+        if (minLongitude) filters.push(`minLongitude=${minLongitude}`);
+        if (maxLongitude) filters.push(`maxLongitude=${maxLongitude}`);
+        let queryString = filters.join('&');
+        return this.http.get<PlaceResponse[]>(`${this.baseUrl}/places/me${queryString.length > 0 ? '?' : ''}${queryString}`);
     }
     
     getAllPlaces(reqLatitude:number, reqLongitude:number, userId:string|null = null, 
