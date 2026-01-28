@@ -29,7 +29,6 @@ export class NearbyPlacesMap implements OnInit {
 
   options: L.MapOptions | undefined;
   layers: L.Layer[] = [];
-  layer = L.circle([0,0], { radius: 0});
 
   async ngOnInit() {
     await this.getAndLoadResults();
@@ -39,11 +38,13 @@ export class NearbyPlacesMap implements OnInit {
     let latLong:LatLong = await getLocation();
     this.latitude = latLong.latitude;
     this.longitude = latLong.longitude;
+    // get min and max latitude/longitude based on max allowable distance
     let d = this.filters.value.maxDistanceKm ?? 5;
     let minLat = this.latitude - (d / 111.1);
     let maxLat = this.latitude + (d / 111.1);
     let minLon = this.longitude - (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
     let maxLon = this.longitude + (d / (Math.abs(Math.cos(this.latitude * Math.PI / 180.0) * 111.1)));
+
     this.placeService.getAllPlaces(this.latitude, this.longitude, null, 
           minLat, maxLat, minLon, maxLon)
       .subscribe({
@@ -53,9 +54,9 @@ export class NearbyPlacesMap implements OnInit {
 
           var numberedIcon = L.divIcon({
             className: 'number-results-icon',
-            html: `<span>${res.length}</span>`,
+            html: `${res.length}`,
             iconSize: [30, 30],
-            iconAnchor: [15, 15] 
+            iconAnchor: [0, 0] 
           });
 
           const markers:L.Marker[] = [
@@ -68,9 +69,7 @@ export class NearbyPlacesMap implements OnInit {
             [maxLat, maxLon]
           ]);
 
-          this.layer = L.circle([this.latitude!, this.longitude!], { radius: 50 });
-
-          this.layers = [ this.layer, ...markers ];
+          this.layers = [...markers];
 
           if (!this.options) {
             this.initializeMap(this.latitude ?? 0, this.longitude ?? 0);
@@ -83,7 +82,6 @@ export class NearbyPlacesMap implements OnInit {
   }
 
   initializeMap(lat:number, long:number) {
-    this.layer = L.circle([lat, long], { radius: 50});
     this.options = {
       layers: [
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -98,7 +96,6 @@ export class NearbyPlacesMap implements OnInit {
   
   applyFilters() {
     this.areFiltersVisible.set(false);
-    //this.options = undefined;
     this.getAndLoadResults();
   }
   

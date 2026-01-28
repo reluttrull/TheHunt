@@ -7,8 +7,9 @@ using TheHunt.Common.Constants;
 
 namespace TheHunt.Places.Places.Endpoints
 {
+    // todo: make version for unknown places
     public class GetById(IPlaceService placeService) :
-        Endpoint<GetPlaceByIdRequest, PlaceResponse>
+        Endpoint<GetPlaceByIdRequest, KnownPlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
 

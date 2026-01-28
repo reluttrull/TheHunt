@@ -7,7 +7,7 @@ using TheHunt.Common.Constants;
 namespace TheHunt.Places.Places.Endpoints
 {
     public class Update(IPlaceService placeService) :
-        Endpoint<UpdatePlaceRequest, PlaceResponse>
+        Endpoint<UpdatePlaceRequest, KnownPlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
 

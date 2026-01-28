@@ -19,9 +19,9 @@ namespace TheHunt.Places
             return new UnknownPlaceResponse(place.Id, place.Name, place.AcceptedRadiusMeters, place.AddedByUserId, place.AddedDate);
         }
 
-        public static PlaceResponse MapToResponse(this Place place)
+        public static KnownPlaceResponse MapToResponse(this Place place)
         {
-            return new PlaceResponse(place.Id, place.Name, place.LocationId, place.AcceptedRadiusMeters, place.Location?.Latitude ?? 0, place.Location?.Longitude ?? 0, place.AddedByUserId, place.AddedDate);
+            return new KnownPlaceResponse(place.Id, place.Name, place.LocationId, place.AcceptedRadiusMeters, place.Location?.Latitude ?? 0, place.Location?.Longitude ?? 0, place.AddedByUserId, place.AddedDate);
         }
     }
 }

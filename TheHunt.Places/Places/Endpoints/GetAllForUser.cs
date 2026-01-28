@@ -10,7 +10,7 @@ using TheHunt.Places.Places.Endpoints;
 namespace TheHunt.Places.PLaces.Endpoints
 {
     public class GetAllForUser(IPlaceService placeService) :
-        Endpoint<GetAllPlacesForUserRequest, IEnumerable<PlaceResponse>>
+        Endpoint<GetAllPlacesForUserRequest, IEnumerable<KnownPlaceResponse>>
     {
         private readonly IPlaceService _placeService = placeService;
 

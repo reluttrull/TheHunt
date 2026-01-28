@@ -1,6 +1,6 @@
 ﻿namespace TheHunt.Places.Places.Endpoints
 {
-    public record PlaceResponse(
+    public record KnownPlaceResponse(
         Guid Id,
         string Name,
         Guid LocationId,

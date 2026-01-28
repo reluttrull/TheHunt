@@ -10,7 +10,7 @@ using TheHunt.Places.Locations;
 namespace TheHunt.Places.Places.Endpoints
 {
     public class Create(IPlaceService placeService, ILocationService locationService) :
-        Endpoint<CreatePlaceRequest, PlaceResponse>
+        Endpoint<CreatePlaceRequest, KnownPlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
         private readonly ILocationService _locationService = locationService;

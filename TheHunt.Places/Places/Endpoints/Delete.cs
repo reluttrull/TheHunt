@@ -11,7 +11,7 @@ using TheHunt.Common.Constants;
 namespace TheHunt.Places.Places.Endpoints
 {
     public class Delete(IPlaceService placeService) :
-        Endpoint<DeletePlaceRequest, PlaceResponse>
+        Endpoint<DeletePlaceRequest, KnownPlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
 
