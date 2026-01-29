@@ -17,7 +17,7 @@ export class CreatePlace {
   fb = inject(FormBuilder);
   form:FormGroup = this.fb.group({
     name: [null],
-    acceptedRadiusMeters: [null],
+    acceptedRadiusMeters: [50],
     hint1: [null],
     hint2: [null],
     hint3: [null]

@@ -3,3 +3,7 @@
     min-width: 300px;
     margin: 30px 30px;
 }
+
+.indent {
+    padding-left: 20px;
+}

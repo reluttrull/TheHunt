@@ -27,3 +27,9 @@
      [leafletFitBounds]="fitBounds">
 </div>
 }
+@for (place of places(); track $index) {
+    <div>{{ $index + 1 }}: </div>
+    <div class="indent">Name: {{ place.name }}</div>
+    <div class="indent">Added: {{ place.addedDate | date:"MMM dd, yyyy 'at' hh:mm a" }}</div>
+    <div class="indent">Get within: {{ place.acceptedRadiusMeters }} meters</div>
+}

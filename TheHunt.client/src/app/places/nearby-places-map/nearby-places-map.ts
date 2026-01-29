@@ -2,13 +2,14 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { LeafletDirective, LeafletLayersDirective } from '@bluehalo/ngx-leaflet';
 import * as L from 'leaflet';
+import { DatePipe } from '@angular/common';
 import { PlaceService } from '../place.service';
 import { UnknownPlaceResponse } from '../interfaces';
 import { LatLong, getLocation } from '../../locations/utils';
 
 @Component({
   selector: 'app-nearby-places-map',
-  imports: [ReactiveFormsModule, LeafletDirective, LeafletLayersDirective],
+  imports: [DatePipe, ReactiveFormsModule, LeafletDirective, LeafletLayersDirective],
   templateUrl: './nearby-places-map.html',
   styleUrl: './nearby-places-map.css',
 })

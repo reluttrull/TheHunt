@@ -5,7 +5,11 @@
     </div>
     <div>
         <label for="acceptedRadiusMeters">Accepted radius (in meters)</label>
-        <input title="acceptedRadiusMeters" type="number" formControlName="acceptedRadiusMeters" />
+        <select title="acceptedRadiusMeters" formControlName="acceptedRadiusMeters">
+            <option value="30">30m</option>
+            <option value="50">50m</option>
+            <option value="100">100m</option>
+        </select>
     </div>
     <div>
         <label for="hint1">Hint 1</label>
