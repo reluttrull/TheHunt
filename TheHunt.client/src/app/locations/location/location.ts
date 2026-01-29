@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { LeafletDirective, LeafletLayerDirective } from '@bluehalo/ngx-leaflet';
-import { tileLayer, latLng, circle } from 'leaflet';
+import { tileLayer, latLng, marker } from 'leaflet';
 import { LocationService } from '../location.service';
 import { LocationResponse } from '../interfaces';
 import { CreatePlace } from "../../places/create-place/create-place";
@@ -23,11 +23,11 @@ export class Location implements OnInit {
     zoom: 15, 
     center: latLng(0,0)
   };
-  layer = circle([0,0], { radius: 0});
+  layer = marker([0,0]);
 
   ngOnInit() {
     this.options.center = latLng(this.location().latitude, this.location().longitude);
-    this.layer = circle([this.location().latitude, this.location().longitude], { radius: 50});
+    this.layer = marker([this.location().latitude, this.location().longitude]);
   }
 
   showCreatePlace() {

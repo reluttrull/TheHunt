@@ -7,20 +7,19 @@ using TheHunt.Common.Constants;
 
 namespace TheHunt.Places.Places.Endpoints
 {
-    public class GetById(IPlaceService placeService) :
-        Endpoint<GetPlaceByIdRequest, KnownPlaceResponse>
+    public class GetUnknownById(IPlaceService placeService) :
+        Endpoint<GetPlaceByIdRequest, UnknownPlaceResponse>
     {
         private readonly IPlaceService _placeService = placeService;
 
         public override void Configure()
         {
-            Get("/places/{Id}");
+            Get("/places/unknown/{Id}");
             Policies(AuthConstants.FreeMemberUserPolicyName);
         }
 
         public override async Task HandleAsync(GetPlaceByIdRequest req, CancellationToken ct)
         {
-            // todo: verify user has permission
             var place = await _placeService.GetPlaceByIdAsync(req.Id);
 
             if (place is null)
@@ -29,7 +28,7 @@ namespace TheHunt.Places.Places.Endpoints
                 return;
             }
 
-            await HttpContext.Response.SendAsync(place.MapToResponse(), cancellation: ct);
+            await HttpContext.Response.SendAsync(place.MapToUnknownResponse(), cancellation: ct);
         }
     }
 }

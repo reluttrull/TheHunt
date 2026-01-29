@@ -1,0 +1,9 @@
+@if (isLoading()) {
+    <div>Loading...</div>
+} @else {
+    <h2>{{ place()?.name }}</h2>
+    <div class="padded-rows">
+        <div><strong>Accepted radius (in meters): </strong>{{ place()?.acceptedRadiusMeters }}</div>
+        <div><strong>Added date: </strong>{{ place()?.addedDate | date:"MMM dd, yyyy 'at' hh:mm a" }}</div>
+    </div>
+}

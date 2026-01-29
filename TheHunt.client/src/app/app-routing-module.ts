@@ -8,6 +8,7 @@ import { MyLocations } from './locations/my-locations/my-locations';
 import { NearbyPlacesMap } from './places/nearby-places-map/nearby-places-map';
 import { MyPlacesMap } from './places/my-places-map/my-places-map';
 import { Place } from './places/place/place';
+import { UnknownPlace } from './places/unknown-place/unknown-place';
 import { authGuard } from './auth/auth.guard';
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'nearbymap', component: NearbyPlacesMap, pathMatch: 'full', canActivate: [authGuard]},
   { path: 'myplaces', component: MyPlacesMap, pathMatch: 'full', canActivate: [authGuard]},
   { path: 'place/:id', component: Place, pathMatch: 'full', canActivate: [authGuard]},
+  { path: 'unknownplace/:id', component: UnknownPlace, pathMatch: 'full', canActivate: [authGuard]},
   { path: '', component: Home, pathMatch: 'full', canActivate: [authGuard] }
 ];
 

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { CreatePlaceRequest, GetAllPlacesRequest, PlaceResponse } from './interfaces';
+import { CreatePlaceRequest, PlaceResponse, UnknownPlaceResponse } from './interfaces';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +26,10 @@ export class PlaceService {
 
     getPlace(id:string) {
         return this.http.get<PlaceResponse>(`${this.baseUrl}/places/${id}`);
+    }
+    
+    getUnknownPlace(id:string) {
+        return this.http.get<UnknownPlaceResponse>(`${this.baseUrl}/places/unknown/${id}`);
     }
     
     getAllPlacesForUser(reqLatitude:number, reqLongitude:number,
