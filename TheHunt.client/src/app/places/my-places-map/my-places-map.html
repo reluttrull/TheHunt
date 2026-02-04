@@ -27,3 +27,6 @@
      [leafletFitBounds]="fitBounds">
 </div>
 }
+@for (place of places(); track $index) {
+  <div>{{ $index + 1 }}: <a class="green-link subtle-link" href="/place/{{ place.id }}">{{ place.name }}</a></div>
+}

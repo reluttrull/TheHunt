@@ -45,6 +45,27 @@ h1, h2, h3, h4, h5, p, div, span, label, input, button {
     "MONO" 1;
 }
 
+.white-link {
+  color: #cccccc;
+}
+
+.white-link:hover {
+  color: #ffffff;
+}
+
+.green-link {
+  color: rgba(13, 190, 51, 0.842);
+}
+
+.green-link:hover {
+  color: rgba(36, 255, 84, 0.842);
+}
+
+.subtle-link {
+  font-weight: bolder;
+  text-decoration: none;
+}
+
 .two-column-flex-container {
     display: flex;
     justify-content: space-between;
@@ -82,4 +103,13 @@ h1, h2, h3, h4, h5, p, div, span, label, input, button {
   background-color: #ffffff87;
   font-size: 16px;
   font-weight: bold;
+}
+
+.large-map {
+  max-height: 450px;
+  min-height: 250px;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  /* ensure user can grab around the map to scroll */
+  margin: 30px 30px;
 }
